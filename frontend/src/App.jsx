@@ -81,6 +81,32 @@ const ANALYTICS_PROJECTION_WINDOW_OPTIONS = [
   { value: '6', label: '6 Months' },
   { value: '12', label: '12 Months' },
 ];
+
+function getSequentialBatchPeriod(startMonth, startYear, offset) {
+  const initialMonthIndex = Math.max(0, MONTH_ORDER.indexOf(startMonth));
+  const initialYear = Number.parseInt(startYear, 10) || new Date().getFullYear();
+  const totalMonthIndex = initialMonthIndex + offset;
+  const monthIndex = ((totalMonthIndex % 12) + 12) % 12;
+  const yearOffset = Math.floor(totalMonthIndex / 12);
+
+  return {
+    month: MONTH_ORDER[monthIndex],
+    year: String(initialYear + yearOffset),
+  };
+}
+
+function buildBatchItems(files, startMonth, startYear, startIndex = 0) {
+  return files.map((file, index) => {
+    const period = getSequentialBatchPeriod(startMonth, startYear, startIndex + index);
+    return {
+      id: `${Date.now()}-${startIndex + index}-${file.name}`,
+      file,
+      name: file.name,
+      month: period.month,
+      year: period.year,
+    };
+  });
+}
 const MAP_STATE_NAME_ALIASES = {
   Delhi: 'NCT of Delhi',
   'New Delhi': 'NCT of Delhi',
@@ -181,12 +207,14 @@ function App() {
               <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col fixed h-full z-20 transition-all duration-300 shadow-2xl`}>
                 <button
                   onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                  className="absolute top-1/2 right-0 z-30 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-r-full rounded-l-xl border border-slate-200 bg-white text-slate-500 shadow-lg transition-all hover:bg-slate-50 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="sidebar-toggle absolute top-1/2 right-[-28px] z-30 flex h-16 w-16 -translate-y-1/2 items-center justify-center text-slate-500 transition-all duration-300 hover:text-primary dark:text-slate-300"
                   aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                   title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
-                  <span className="material-symbols-outlined text-base">
-                    {isSidebarCollapsed ? 'chevron_right' : 'chevron_left'}
+                  <span className="sidebar-toggle__inner flex h-14 w-14 items-center justify-center rounded-full bg-white text-slate-500 shadow-[0_10px_28px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/80 transition-all duration-300 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700">
+                    <span className="material-symbols-outlined text-[24px]">
+                      {isSidebarCollapsed ? 'chevron_right' : 'chevron_left'}
+                    </span>
                   </span>
                 </button>
                 <div className="p-6 flex items-center">
@@ -220,12 +248,6 @@ function App() {
                       <NavLink to="/reports" icon="description" label="Reports" isCollapsed={isSidebarCollapsed} />
                    </div>
                    
-                   <div className="pt-8 pt-auto">
-                      <button onClick={logout} className={`w-full flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                         <span className="material-symbols-outlined">logout</span>
-                         {!isSidebarCollapsed && <span className="text-sm font-bold">Logout Session</span>}
-                      </button>
-                   </div>
                 </nav>
                 
                 <div className="p-4 border-t border-slate-200 dark:border-slate-800">
@@ -235,7 +257,7 @@ function App() {
 
               {/* Main Workspace */}
               <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-                <Header user={user} setDarkMode={setDarkMode} darkMode={darkMode} />
+                <Header user={user} setDarkMode={setDarkMode} darkMode={darkMode} logout={logout} />
                 <main className="flex-1 overflow-y-auto">
                    <Routes>
                      <Route path="/" element={<DashboardSummary />} />
@@ -269,7 +291,7 @@ function NavLink({ to, icon, label, isCollapsed }) {
   );
 }
 
-function Header({ user, setDarkMode, darkMode }) {
+function Header({ user, setDarkMode, darkMode, logout }) {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -349,20 +371,19 @@ function Header({ user, setDarkMode, darkMode }) {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
     setBatchFiles((currentFiles) => {
-      const nextItems = files.map((file, index) => ({
-        id: `${Date.now()}-${index}-${file.name}`,
-        file,
-        name: file.name,
-        month: selectedMonth,
-        year: selectedYear,
-      }));
+      const nextItems = buildBatchItems(files, selectedMonth, selectedYear, currentFiles.length);
       return [...currentFiles, ...nextItems];
     });
   };
 
-  const updateBatchFileMeta = (id, field, value) => {
-    setBatchFiles((currentFiles) => currentFiles.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
-  };
+  useEffect(() => {
+    if (importMode !== 'batch' || batchFiles.length === 0) return;
+
+    setBatchFiles((currentFiles) => currentFiles.map((item, index) => ({
+      ...item,
+      ...getSequentialBatchPeriod(selectedMonth, selectedYear, index),
+    })));
+  }, [batchFiles.length, importMode, selectedMonth, selectedYear]);
 
   const openProjectFromSearch = (project) => {
     setSearchQuery(project.name || '');
@@ -623,6 +644,10 @@ function Header({ user, setDarkMode, darkMode }) {
                     <span className="material-symbols-outlined text-slate-400 text-base">settings</span>
                     <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Account Settings</span>
                   </button>
+                  <button onClick={() => { setIsProfileOpen(false); logout(); }} className="mt-2 w-full flex items-center gap-3 p-3 rounded-2xl text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                    <span className="material-symbols-outlined text-base">logout</span>
+                    <span className="text-sm font-bold">Logout Session</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -672,10 +697,10 @@ function Header({ user, setDarkMode, darkMode }) {
                   }}
                 />
 
-                {importMode === 'single' && (
+                {(importMode === 'single' || importMode === 'batch') && (
                   <>
                     <ImportDropdown
-                      label="Month"
+                      label={importMode === 'single' ? 'Month' : 'Start Month'}
                       value={selectedMonth}
                       options={months.map((month) => ({ value: month, label: month }))}
                       isOpen={openImportMenu === 'month'}
@@ -687,7 +712,7 @@ function Header({ user, setDarkMode, darkMode }) {
                     />
 
                     <ImportDropdown
-                      label="Year"
+                      label={importMode === 'single' ? 'Year' : 'Start Year'}
                       value={selectedYear}
                       options={years.map((year) => ({ value: year, label: year }))}
                       isOpen={openImportMenu === 'year'}
@@ -708,7 +733,9 @@ function Header({ user, setDarkMode, darkMode }) {
                     <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                       {importMode === 'single'
                         ? (selectedFile ? selectedFile.name : 'Upload a CSV or Excel file for the selected reporting period.')
-                        : `${batchFiles.length} file(s) selected for batch import.`}
+                        : batchFiles.length > 0
+                          ? `${batchFiles.length} file(s) queued. Months will auto-increment from ${selectedMonth} ${selectedYear}.`
+                          : `Choose files once, then we'll auto-assign months starting from ${selectedMonth} ${selectedYear}.`}
                     </p>
                   </div>
                   <button
@@ -730,23 +757,18 @@ function Header({ user, setDarkMode, darkMode }) {
                     <span>Year</span>
                   </div>
                   <div className="max-h-56 overflow-y-auto bg-white dark:bg-slate-900">
-                    {batchFiles.map((batchItem) => (
+                    {batchFiles.map((batchItem, index) => (
                       <div key={batchItem.id} className="grid grid-cols-[1.6fr_1fr_1fr] items-center gap-3 border-t border-slate-100 px-4 py-3 dark:border-slate-800">
-                        <span className="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{batchItem.name}</span>
-                        <select
-                          value={batchItem.month}
-                          onChange={(event) => updateBatchFileMeta(batchItem.id, 'month', event.target.value)}
-                          className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                        >
-                          {months.map((month) => <option key={`${batchItem.id}-${month}`} value={month}>{month}</option>)}
-                        </select>
-                        <select
-                          value={batchItem.year}
-                          onChange={(event) => updateBatchFileMeta(batchItem.id, 'year', event.target.value)}
-                          className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                        >
-                          {years.map((year) => <option key={`${batchItem.id}-${year}`} value={year}>{year}</option>)}
-                        </select>
+                        <div className="min-w-0">
+                          <span className="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{batchItem.name}</span>
+                          <div className="mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">File {index + 1}</div>
+                        </div>
+                        <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                          {batchItem.month}
+                        </div>
+                        <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                          {batchItem.year}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -759,7 +781,7 @@ function Header({ user, setDarkMode, darkMode }) {
                   <p className="text-slate-500 dark:text-slate-400">
                     {importMode === 'single'
                       ? `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${selectedMonth} ${selectedYear}`
-                      : `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${batchFiles.length} month file(s)`}
+                      : `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${batchFiles.length} month file(s) from ${selectedMonth} ${selectedYear}`}
                   </p>
                 </div>
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-primary">Ready</span>

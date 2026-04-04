@@ -47,6 +47,16 @@ aside, main {
   margin-left: 5rem;
 }
 
+.sidebar-toggle {
+  overflow: visible;
+}
+
+.sidebar-toggle__inner {
+  position: relative;
+  z-index: 1;
+  margin-left: 0;
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
