@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { scaleLinear } from 'd3-scale';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const configuredApiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const fallbackApiBases = ['', configuredApiBase, 'http://localhost:8001', 'http://localhost:8000']
@@ -160,6 +161,33 @@ function normalizeMapStateName(value) {
   return MAP_STATE_NAME_ALIASES[text] || text;
 }
 
+function downloadChart(chartRef, filename = 'chart.png') {
+  if (!chartRef?.current) return;
+
+  html2canvas(chartRef.current, {
+    backgroundColor: '#ffffff',
+    scale: 2
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `${filename}-${new Date().getTime()}.png`;
+    link.click();
+  });
+}
+
+function DownloadButton({ chartRef, filename, className = '' }) {
+  return (
+    <button
+      onClick={() => downloadChart(chartRef, filename)}
+      className={`absolute right-6 top-6 z-10 flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-lg shadow-slate-900/10 ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700 dark:bg-slate-900 dark:text-sky-300 dark:ring-slate-700 dark:hover:bg-slate-800 ${className}`}
+      title="Download as PNG"
+      aria-label="Download as PNG"
+    >
+      <span className="material-symbols-outlined text-[22px] leading-none">download</span>
+    </button>
+  );
+}
+
 // Main Application Component with Router
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -198,11 +226,11 @@ function App() {
           path="/signup"
           element={token ? <Navigate to="/" replace /> : <Signup />}
         />
-        
+
         <Route path="/*" element={
           token ? (
             <div className={`bg-[#f8fafc] dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 min-h-screen flex transition-all duration-300 ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-              
+
               {/* Sidebar: Analytics Pro Legacy Style */}
               <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col fixed h-full z-20 transition-all duration-300 shadow-2xl`}>
                 <button
@@ -218,40 +246,40 @@ function App() {
                   </span>
                 </button>
                 <div className="p-6 flex items-center">
-                   <div className="flex items-center gap-3 overflow-hidden">
-                      <div className="size-8 text-primary shrink-0">
-                        <span className="material-symbols-outlined text-3xl font-black">finance_mode</span>
-                      </div>
-                      {!isSidebarCollapsed && <span className="text-xl font-bold tracking-tight text-primary font-display uppercase whitespace-nowrap">Analytics Pro</span>}
-                   </div>
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="size-8 text-primary shrink-0">
+                      <span className="material-symbols-outlined text-3xl font-black">finance_mode</span>
+                    </div>
+                    {!isSidebarCollapsed && <span className="text-xl font-bold tracking-tight text-primary font-display uppercase whitespace-nowrap">Analytics Pro</span>}
+                  </div>
                 </div>
-                
+
                 <nav className="flex-1 px-4 py-4 space-y-6 overflow-y-auto no-scrollbar">
-                   <button className={`bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold border border-indigo-100 dark:border-indigo-800 transition-all ui-hover shadow-sm ${isSidebarCollapsed ? 'mx-auto flex h-12 w-12 items-center justify-center' : 'w-full flex items-center gap-3 p-3'}`}>
-                      <span className="material-symbols-outlined text-indigo-500">auto_awesome</span>
-                      {!isSidebarCollapsed && <span>Ask Yua AI</span>}
-                   </button>
-                   
-                   <div className="space-y-1">
-                      <NavLink to="/" icon="dashboard" label="Dashboard" isCollapsed={isSidebarCollapsed} />
-                      <NavLink to="/favorites" icon="star" label="Favorites" isCollapsed={isSidebarCollapsed} />
-                   </div>
+                  <button className={`bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold border border-indigo-100 dark:border-indigo-800 transition-all ui-hover shadow-sm ${isSidebarCollapsed ? 'mx-auto flex h-12 w-12 items-center justify-center' : 'w-full flex items-center gap-3 p-3'}`}>
+                    <span className="material-symbols-outlined text-indigo-500">auto_awesome</span>
+                    {!isSidebarCollapsed && <span>Ask Yua AI</span>}
+                  </button>
 
-                   <div className="space-y-1">
-                      {!isSidebarCollapsed && <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[2px] mb-2 mt-4">MY DATA</h3>}
-                      <NavLink to="/projects" icon="folder_open" label="My Projects" isCollapsed={isSidebarCollapsed} />
-                   </div>
+                  <div className="space-y-1">
+                    <NavLink to="/" icon="dashboard" label="Dashboard" isCollapsed={isSidebarCollapsed} />
+                    <NavLink to="/favorites" icon="star" label="Favorites" isCollapsed={isSidebarCollapsed} />
+                  </div>
 
-                   <div className="space-y-1">
-                      {!isSidebarCollapsed && <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[2px] mb-2 mt-4">ANALYSIS</h3>}
-                      <NavLink to="/advanced-analytics" icon="insights" label="Advanced Analytics" isCollapsed={isSidebarCollapsed} />
-                      <NavLink to="/reports" icon="description" label="Reports" isCollapsed={isSidebarCollapsed} />
-                   </div>
-                   
+                  <div className="space-y-1">
+                    {!isSidebarCollapsed && <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[2px] mb-2 mt-4">MY DATA</h3>}
+                    <NavLink to="/projects" icon="folder_open" label="My Projects" isCollapsed={isSidebarCollapsed} />
+                  </div>
+
+                  <div className="space-y-1">
+                    {!isSidebarCollapsed && <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[2px] mb-2 mt-4">ANALYSIS</h3>}
+                    <NavLink to="/advanced-analytics" icon="insights" label="Advanced Analytics" isCollapsed={isSidebarCollapsed} />
+                    <NavLink to="/reports" icon="description" label="Reports" isCollapsed={isSidebarCollapsed} />
+                  </div>
+
                 </nav>
-                
+
                 <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-                   <NavLink to="/settings" icon="settings" label="Settings" isCollapsed={isSidebarCollapsed} />
+                  <NavLink to="/settings" icon="settings" label="Settings" isCollapsed={isSidebarCollapsed} />
                 </div>
               </aside>
 
@@ -259,16 +287,16 @@ function App() {
               <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
                 <Header user={user} setDarkMode={setDarkMode} darkMode={darkMode} logout={logout} />
                 <main className="flex-1 overflow-y-auto">
-                   <Routes>
-                     <Route path="/" element={<DashboardSummary />} />
-                     <Route path="/projects" element={<ProjectsList />} />
-                     <Route path="/favorites" element={<FavoritesList />} />
-                     <Route path="/reports" element={<ReportsPage />} />
-                     <Route path="/settings" element={<SettingsPage user={user} />} />
-                     <Route path="/advanced-analytics" element={<AdvancedAnalyticsBoard />} />
-                     <Route path="/advanced-analytics/:projectId" element={<AdvancedAnalyticsBoard />} />
-                     <Route path="/analytics/:projectId" element={<StoreDetailAnalytics />} />
-                   </Routes>
+                  <Routes>
+                    <Route path="/" element={<DashboardSummary />} />
+                    <Route path="/projects" element={<ProjectsList />} />
+                    <Route path="/favorites" element={<FavoritesList />} />
+                    <Route path="/reports" element={<ReportsPage />} />
+                    <Route path="/settings" element={<SettingsPage user={user} />} />
+                    <Route path="/advanced-analytics" element={<AdvancedAnalyticsBoard />} />
+                    <Route path="/advanced-analytics/:projectId" element={<AdvancedAnalyticsBoard />} />
+                    <Route path="/analytics/:projectId" element={<StoreDetailAnalytics />} />
+                  </Routes>
                 </main>
               </div>
             </div>
@@ -344,7 +372,7 @@ function Header({ user, setDarkMode, darkMode, logout }) {
     if (isProfileOpen && !profileData) {
       apiRequest({ method: 'get', url: '/api/user/profile', headers: { 'Authorization': `Bearer ${token}` } })
         .then((res) => setProfileData(res.data))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [isProfileOpen, profileData, token]);
 
@@ -474,50 +502,50 @@ function Header({ user, setDarkMode, darkMode, logout }) {
     <>
       <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-30">
         <div className="flex-1 max-w-xl relative" ref={searchRef}>
-           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500 text-lg">auto_awesome</span>
-           <form onSubmit={handleSearchSubmit}>
-             <input
-               className="w-full pl-12 pr-16 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all text-sm outline-none placeholder:text-slate-400 font-medium"
-               placeholder="Search projects (e.g., Kannan Stores)"
-               type="text"
-               value={searchQuery}
-               onChange={(event) => {
-                 setSearchQuery(event.target.value);
-                 setIsSearchOpen(true);
-               }}
-               onFocus={() => setIsSearchOpen(true)}
-             />
-           </form>
-           {isSearchOpen && (normalizedSearch || searchMatches.length > 0) && (
-             <div className="absolute left-0 right-0 top-full mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
-               {searchMatches.length > 0 ? (
-                 searchMatches.map((project) => (
-                   <button
-                     key={project.id}
-                     type="button"
-                     onClick={() => openProjectFromSearch(project)}
-                     className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
-                   >
-                     <span className="truncate">{project.name}</span>
-                     <span className="material-symbols-outlined text-base text-slate-300">arrow_forward</span>
-                   </button>
-                 ))
-               ) : (
-                 <div className="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-300">No matching project found.</div>
-               )}
-             </div>
-           )}
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500 text-lg">auto_awesome</span>
+          <form onSubmit={handleSearchSubmit}>
+            <input
+              className="w-full pl-12 pr-16 py-3 bg-slate-100 dark:bg-slate-800 border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all text-sm outline-none placeholder:text-slate-400 font-medium"
+              placeholder="Search projects (e.g., Kannan Stores)"
+              type="text"
+              value={searchQuery}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setIsSearchOpen(true);
+              }}
+              onFocus={() => setIsSearchOpen(true)}
+            />
+          </form>
+          {isSearchOpen && (normalizedSearch || searchMatches.length > 0) && (
+            <div className="absolute left-0 right-0 top-full mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+              {searchMatches.length > 0 ? (
+                searchMatches.map((project) => (
+                  <button
+                    key={project.id}
+                    type="button"
+                    onClick={() => openProjectFromSearch(project)}
+                    className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
+                  >
+                    <span className="truncate">{project.name}</span>
+                    <span className="material-symbols-outlined text-base text-slate-300">arrow_forward</span>
+                  </button>
+                ))
+              ) : (
+                <div className="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-300">No matching project found.</div>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-4">
           <button onClick={() => setDarkMode(!darkMode)} className="p-2.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all">
-             <span className="material-symbols-outlined">{darkMode ? 'light_mode' : 'dark_mode'}</span>
+            <span className="material-symbols-outlined">{darkMode ? 'light_mode' : 'dark_mode'}</span>
           </button>
 
           {/* Notifications */}
           <div className="relative" ref={notifRef}>
             <button onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); setIsExportOpen(false); }} className="p-2.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-all relative">
-               <span className="material-symbols-outlined">notifications</span>
-               {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] bg-rose-500 rounded-full border-2 border-white dark:border-slate-900 text-white text-[9px] font-black flex items-center justify-center px-0.5">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+              <span className="material-symbols-outlined">notifications</span>
+              {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] bg-rose-500 rounded-full border-2 border-white dark:border-slate-900 text-white text-[9px] font-black flex items-center justify-center px-0.5">{unreadCount > 9 ? '9+' : unreadCount}</span>}
             </button>
             {isNotifOpen && (
               <div className="absolute right-0 top-full mt-3 w-96 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl z-50 overflow-hidden">
@@ -555,7 +583,7 @@ function Header({ user, setDarkMode, darkMode, logout }) {
           </div>
 
           <button onClick={openImportDialog} className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:shadow-lg hover:shadow-primary/30 transition-all ui-hover">
-             <span className="material-symbols-outlined text-sm">add</span> Import Data
+            <span className="material-symbols-outlined text-sm">add</span> Import Data
           </button>
           <input
             type="file"
@@ -565,41 +593,41 @@ function Header({ user, setDarkMode, darkMode, logout }) {
             accept=".csv,.xlsx,.xls"
             multiple={importMode === 'batch'}
           />
-          
+
           {/* Export */}
           <div className="relative" ref={exportRef}>
-             <button onClick={() => { setIsExportOpen(!isExportOpen); setIsNotifOpen(false); setIsProfileOpen(false); }} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                <span className="material-symbols-outlined text-sm">download</span> Export
-             </button>
-             {isExportOpen && (
-               <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden ring-1 ring-black/5">
-                  <button onClick={handleExportPdf} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors">
-                    <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-rose-500"><span className="material-symbols-outlined text-base leading-none">picture_as_pdf</span></div>
-                    <div><div className="text-sm font-bold text-slate-900 dark:text-white">PDF Report</div><div className="text-[10px] text-slate-400 font-medium">Dashboard summary</div></div>
-                  </button>
-                  <button onClick={handleExportCsv} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors">
-                    <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-emerald-500"><span className="material-symbols-outlined text-base leading-none">table_chart</span></div>
-                    <div><div className="text-sm font-bold text-slate-900 dark:text-white">Excel CSV</div><div className="text-[10px] text-slate-400 font-medium">Projects raw data</div></div>
-                  </button>
-                  <button onClick={() => { navigate('/reports'); setIsExportOpen(false); }} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors bg-indigo-50/30 dark:bg-indigo-950/20">
-                    <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-indigo-600"><span className="material-symbols-outlined text-base leading-none">auto_awesome</span></div>
-                    <div><div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">Full Reports <span className="bg-indigo-100 text-indigo-600 text-[8px] px-1.5 py-0.5 rounded font-black">PDF</span></div><div className="text-[10px] text-slate-400 font-medium">Per-store SWOT analysis</div></div>
-                  </button>
-               </div>
-             )}
+            <button onClick={() => { setIsExportOpen(!isExportOpen); setIsNotifOpen(false); setIsProfileOpen(false); }} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+              <span className="material-symbols-outlined text-sm">download</span> Export
+            </button>
+            {isExportOpen && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden ring-1 ring-black/5">
+                <button onClick={handleExportPdf} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors">
+                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-rose-500"><span className="material-symbols-outlined text-base leading-none">picture_as_pdf</span></div>
+                  <div><div className="text-sm font-bold text-slate-900 dark:text-white">PDF Report</div><div className="text-[10px] text-slate-400 font-medium">Dashboard summary</div></div>
+                </button>
+                <button onClick={handleExportCsv} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors">
+                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-emerald-500"><span className="material-symbols-outlined text-base leading-none">table_chart</span></div>
+                  <div><div className="text-sm font-bold text-slate-900 dark:text-white">Excel CSV</div><div className="text-[10px] text-slate-400 font-medium">Projects raw data</div></div>
+                </button>
+                <button onClick={() => { navigate('/reports'); setIsExportOpen(false); }} className="w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors bg-indigo-50/30 dark:bg-indigo-950/20">
+                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-indigo-600"><span className="material-symbols-outlined text-base leading-none">auto_awesome</span></div>
+                  <div><div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">Full Reports <span className="bg-indigo-100 text-indigo-600 text-[8px] px-1.5 py-0.5 rounded font-black">PDF</span></div><div className="text-[10px] text-slate-400 font-medium">Per-store SWOT analysis</div></div>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* User Profile */}
           <div className="relative border-l border-slate-200 dark:border-slate-800 pl-4" ref={profileRef}>
             <button onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); setIsExportOpen(false); }} className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-2xl px-3 py-2 transition-all">
-               <div className="text-right hidden xl:block">
-                  <div className="text-sm font-black text-slate-900 dark:text-white leading-none">{user?.name || 'User'}</div>
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{user?.position || 'Administrator'}</div>
-               </div>
-               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black overflow-hidden border-2 border-primary/20">
-                  {user?.profile_picture ? <img src={user.profile_picture} alt="avatar" className="w-full h-full object-cover" /> : (user?.name?.charAt(0) || 'U')}
-               </div>
-               <span className="material-symbols-outlined text-slate-400 text-base hidden xl:block">{isProfileOpen ? 'expand_less' : 'expand_more'}</span>
+              <div className="text-right hidden xl:block">
+                <div className="text-sm font-black text-slate-900 dark:text-white leading-none">{user?.name || 'User'}</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{user?.position || 'Administrator'}</div>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black overflow-hidden border-2 border-primary/20">
+                {user?.profile_picture ? <img src={user.profile_picture} alt="avatar" className="w-full h-full object-cover" /> : (user?.name?.charAt(0) || 'U')}
+              </div>
+              <span className="material-symbols-outlined text-slate-400 text-base hidden xl:block">{isProfileOpen ? 'expand_less' : 'expand_more'}</span>
             </button>
 
             {isProfileOpen && (
@@ -659,149 +687,149 @@ function Header({ user, setDarkMode, darkMode, logout }) {
         <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 pt-8 md:items-center md:p-6">
           <div className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in" onClick={resetImportDialog}></div>
           <div className="relative max-h-[calc(100vh-4rem)] overflow-y-auto p-6 md:max-h-[min(85vh,900px)] md:p-10">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-sm ring-1 ring-indigo-100 dark:bg-slate-800 dark:ring-slate-700"><span className="material-symbols-outlined text-3xl">upload_file</span></div>
-                <div>
-                  <h3 className="text-2xl font-black tracking-tighter">Import Data</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Import one file or multiple month files in one run.</p>
-                </div>
+            <div className="mb-8 flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-sm ring-1 ring-indigo-100 dark:bg-slate-800 dark:ring-slate-700"><span className="material-symbols-outlined text-3xl">upload_file</span></div>
+              <div>
+                <h3 className="text-2xl font-black tracking-tighter">Import Data</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Import one file or multiple month files in one run.</p>
               </div>
+            </div>
 
-              <div className="mb-6 inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setImportMode('single')}
-                  className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${importMode === 'single' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500'}`}
-                >
-                  Single Month
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setImportMode('batch')}
-                  className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${importMode === 'batch' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500'}`}
-                >
-                  Multi-Month Batch
-                </button>
-              </div>
+            <div className="mb-6 inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
+              <button
+                type="button"
+                onClick={() => setImportMode('single')}
+                className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${importMode === 'single' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500'}`}
+              >
+                Single Month
+              </button>
+              <button
+                type="button"
+                onClick={() => setImportMode('batch')}
+                className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${importMode === 'batch' ? 'bg-white text-primary shadow-sm dark:bg-slate-900' : 'text-slate-500'}`}
+              >
+                Multi-Month Batch
+              </button>
+            </div>
 
-              <div className={`grid gap-5 ${importMode === 'single' ? 'md:grid-cols-2 xl:grid-cols-3' : 'md:grid-cols-1 xl:grid-cols-1'}`}>
-                <ImportDropdown
-                  label="Project"
-                  value={availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project'}
-                  options={availableProjects.map((project) => ({ value: String(project.id), label: project.name }))}
-                  isOpen={openImportMenu === 'project'}
-                  onToggle={() => setOpenImportMenu(openImportMenu === 'project' ? null : 'project')}
-                  onSelect={(projectId) => {
-                    setSelectedImportProjectId(projectId);
-                    setOpenImportMenu(null);
-                  }}
-                />
+            <div className={`grid gap-5 ${importMode === 'single' ? 'md:grid-cols-2 xl:grid-cols-3' : 'md:grid-cols-1 xl:grid-cols-1'}`}>
+              <ImportDropdown
+                label="Project"
+                value={availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project'}
+                options={availableProjects.map((project) => ({ value: String(project.id), label: project.name }))}
+                isOpen={openImportMenu === 'project'}
+                onToggle={() => setOpenImportMenu(openImportMenu === 'project' ? null : 'project')}
+                onSelect={(projectId) => {
+                  setSelectedImportProjectId(projectId);
+                  setOpenImportMenu(null);
+                }}
+              />
 
-                {(importMode === 'single' || importMode === 'batch') && (
-                  <>
-                    <ImportDropdown
-                      label={importMode === 'single' ? 'Month' : 'Start Month'}
-                      value={selectedMonth}
-                      options={months.map((month) => ({ value: month, label: month }))}
-                      isOpen={openImportMenu === 'month'}
-                      onToggle={() => setOpenImportMenu(openImportMenu === 'month' ? null : 'month')}
-                      onSelect={(month) => {
-                        setSelectedMonth(month);
-                        setOpenImportMenu(null);
-                      }}
-                    />
+              {(importMode === 'single' || importMode === 'batch') && (
+                <>
+                  <ImportDropdown
+                    label={importMode === 'single' ? 'Month' : 'Start Month'}
+                    value={selectedMonth}
+                    options={months.map((month) => ({ value: month, label: month }))}
+                    isOpen={openImportMenu === 'month'}
+                    onToggle={() => setOpenImportMenu(openImportMenu === 'month' ? null : 'month')}
+                    onSelect={(month) => {
+                      setSelectedMonth(month);
+                      setOpenImportMenu(null);
+                    }}
+                  />
 
-                    <ImportDropdown
-                      label={importMode === 'single' ? 'Year' : 'Start Year'}
-                      value={selectedYear}
-                      options={years.map((year) => ({ value: year, label: year }))}
-                      isOpen={openImportMenu === 'year'}
-                      onToggle={() => setOpenImportMenu(openImportMenu === 'year' ? null : 'year')}
-                      onSelect={(year) => {
-                        setSelectedYear(year);
-                        setOpenImportMenu(null);
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-
-              <div className="mt-6 rounded-[1.75rem] border border-dashed border-slate-300 bg-slate-50/80 p-5 dark:border-slate-700 dark:bg-slate-800/50">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-sm font-black text-slate-900 dark:text-white">Data file</p>
-                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                      {importMode === 'single'
-                        ? (selectedFile ? selectedFile.name : 'Upload a CSV or Excel file for the selected reporting period.')
-                        : batchFiles.length > 0
-                          ? `${batchFiles.length} file(s) queued. Months will auto-increment from ${selectedMonth} ${selectedYear}.`
-                          : `Choose files once, then we'll auto-assign months starting from ${selectedMonth} ${selectedYear}.`}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
-                  >
-                    <span className="material-symbols-outlined text-sm">attach_file</span>
-                    {importMode === 'single' ? (selectedFile ? 'Change File' : 'Choose File') : (batchFiles.length > 0 ? 'Add / Change Files' : 'Choose Files')}
-                  </button>
-                </div>
-              </div>
-
-              {importMode === 'batch' && batchFiles.length > 0 && (
-                <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
-                  <div className="grid grid-cols-[1.6fr_1fr_1fr] bg-slate-50 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:bg-slate-800/70 dark:text-slate-300">
-                    <span>File</span>
-                    <span>Month</span>
-                    <span>Year</span>
-                  </div>
-                  <div className="max-h-56 overflow-y-auto bg-white dark:bg-slate-900">
-                    {batchFiles.map((batchItem, index) => (
-                      <div key={batchItem.id} className="grid grid-cols-[1.6fr_1fr_1fr] items-center gap-3 border-t border-slate-100 px-4 py-3 dark:border-slate-800">
-                        <div className="min-w-0">
-                          <span className="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{batchItem.name}</span>
-                          <div className="mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">File {index + 1}</div>
-                        </div>
-                        <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                          {batchItem.month}
-                        </div>
-                        <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                          {batchItem.year}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  <ImportDropdown
+                    label={importMode === 'single' ? 'Year' : 'Start Year'}
+                    value={selectedYear}
+                    options={years.map((year) => ({ value: year, label: year }))}
+                    isOpen={openImportMenu === 'year'}
+                    onToggle={() => setOpenImportMenu(openImportMenu === 'year' ? null : 'year')}
+                    onSelect={(year) => {
+                      setSelectedYear(year);
+                      setOpenImportMenu(null);
+                    }}
+                  />
+                </>
               )}
+            </div>
 
-              <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-950/50">
+            <div className="mt-6 rounded-[1.75rem] border border-dashed border-slate-300 bg-slate-50/80 p-5 dark:border-slate-700 dark:bg-slate-800/50">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="font-bold text-slate-900 dark:text-white">Import target</p>
-                  <p className="text-slate-500 dark:text-slate-400">
+                  <p className="text-sm font-black text-slate-900 dark:text-white">Data file</p>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     {importMode === 'single'
-                      ? `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${selectedMonth} ${selectedYear}`
-                      : `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${batchFiles.length} month file(s) from ${selectedMonth} ${selectedYear}`}
+                      ? (selectedFile ? selectedFile.name : 'Upload a CSV or Excel file for the selected reporting period.')
+                      : batchFiles.length > 0
+                        ? `${batchFiles.length} file(s) queued. Months will auto-increment from ${selectedMonth} ${selectedYear}.`
+                        : `Choose files once, then we'll auto-assign months starting from ${selectedMonth} ${selectedYear}.`}
                   </p>
                 </div>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-primary">Ready</span>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
+                >
+                  <span className="material-symbols-outlined text-sm">attach_file</span>
+                  {importMode === 'single' ? (selectedFile ? 'Change File' : 'Choose File') : (batchFiles.length > 0 ? 'Add / Change Files' : 'Choose Files')}
+                </button>
               </div>
+            </div>
 
-              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <button
-                  onClick={resetImportDialog}
-                  className="rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleUpload}
-                  disabled={(importMode === 'single' ? !selectedFile : batchFiles.length === 0) || isUploading}
-                  className="rounded-2xl bg-primary px-5 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
-                >
-                  {isUploading ? 'Importing...' : (importMode === 'single' ? 'Import Now' : 'Import All Months')}
-                </button>
+            {importMode === 'batch' && batchFiles.length > 0 && (
+              <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-[1.6fr_1fr_1fr] bg-slate-50 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:bg-slate-800/70 dark:text-slate-300">
+                  <span>File</span>
+                  <span>Month</span>
+                  <span>Year</span>
+                </div>
+                <div className="max-h-56 overflow-y-auto bg-white dark:bg-slate-900">
+                  {batchFiles.map((batchItem, index) => (
+                    <div key={batchItem.id} className="grid grid-cols-[1.6fr_1fr_1fr] items-center gap-3 border-t border-slate-100 px-4 py-3 dark:border-slate-800">
+                      <div className="min-w-0">
+                        <span className="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{batchItem.name}</span>
+                        <div className="mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">File {index + 1}</div>
+                      </div>
+                      <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                        {batchItem.month}
+                      </div>
+                      <div className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                        {batchItem.year}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
+
+            <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-950/50">
+              <div>
+                <p className="font-bold text-slate-900 dark:text-white">Import target</p>
+                <p className="text-slate-500 dark:text-slate-400">
+                  {importMode === 'single'
+                    ? `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${selectedMonth} ${selectedYear}`
+                    : `${(availableProjects.find((project) => String(project.id) === String(selectedImportProjectId))?.name || 'Select project')} | ${batchFiles.length} month file(s) from ${selectedMonth} ${selectedYear}`}
+                </p>
+              </div>
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-primary">Ready</span>
+            </div>
+
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                onClick={resetImportDialog}
+                className="rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpload}
+                disabled={(importMode === 'single' ? !selectedFile : batchFiles.length === 0) || isUploading}
+                className="rounded-2xl bg-primary px-5 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+              >
+                {isUploading ? 'Importing...' : (importMode === 'single' ? 'Import Now' : 'Import All Months')}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -814,11 +842,11 @@ function ExportItem({ icon, label, sub, color, isPremium }) {
     <button className={`w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-4 transition-colors ${isPremium ? 'bg-indigo-50/30 dark:bg-indigo-950/20' : ''}`}>
       <div className={`p-2 rounded-lg bg-slate-50 dark:bg-slate-800 ${color}`}><span className="material-symbols-outlined text-base leading-none">{icon}</span></div>
       <div>
-         <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-           {label}
-           {isPremium && <span className="bg-indigo-100 text-indigo-600 text-[8px] px-1.5 py-0.5 rounded font-black">AI+</span>}
-         </div>
-         <div className="text-[10px] text-slate-400 font-medium">{sub}</div>
+        <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          {label}
+          {isPremium && <span className="bg-indigo-100 text-indigo-600 text-[8px] px-1.5 py-0.5 rounded font-black">AI+</span>}
+        </div>
+        <div className="text-[10px] text-slate-400 font-medium">{sub}</div>
       </div>
     </button>
   );
@@ -831,11 +859,10 @@ function ImportDropdown({ label, value, options, isOpen, onToggle, onSelect }) {
       <button
         type="button"
         onClick={onToggle}
-        className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left font-semibold transition-all ${
-          isOpen
-            ? 'border-primary bg-white shadow-lg shadow-primary/10 ring-4 ring-primary/10 dark:bg-slate-800'
-            : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600'
-        } text-slate-900 dark:text-white`}
+        className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left font-semibold transition-all ${isOpen
+          ? 'border-primary bg-white shadow-lg shadow-primary/10 ring-4 ring-primary/10 dark:bg-slate-800'
+          : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600'
+          } text-slate-900 dark:text-white`}
       >
         <span>{value}</span>
         <span className={`material-symbols-outlined text-base text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-primary' : ''}`}>expand_more</span>
@@ -849,11 +876,10 @@ function ImportDropdown({ label, value, options, isOpen, onToggle, onSelect }) {
                 key={option.value}
                 type="button"
                 onClick={() => onSelect(option.value)}
-                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
-                  option.label === value
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
-                }`}
+                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${option.label === value
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                  }`}
               >
                 <span>{option.label}</span>
                 {option.label === value && <span className="material-symbols-outlined text-base">check</span>}
@@ -905,11 +931,10 @@ function MultiSelectDropdown({ label, options, selectedValues, onChange, placeho
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className={`flex h-12 w-full items-center justify-between rounded-2xl border px-4 text-left text-sm font-medium transition-all ${
-          isOpen
-            ? 'border-sky-400 bg-white ring-4 ring-sky-100 dark:bg-slate-900 dark:ring-sky-900/20'
-            : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900'
-        }`}
+        className={`flex h-12 w-full items-center justify-between rounded-2xl border px-4 text-left text-sm font-medium transition-all ${isOpen
+          ? 'border-sky-400 bg-white ring-4 ring-sky-100 dark:bg-slate-900 dark:ring-sky-900/20'
+          : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900'
+          }`}
       >
         <span className="truncate text-slate-700 dark:text-slate-200">{buttonText}</span>
         <span className={`material-symbols-outlined text-base text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-sky-500' : ''}`}>expand_more</span>
@@ -941,11 +966,10 @@ function MultiSelectDropdown({ label, options, selectedValues, onChange, placeho
                   key={option.value}
                   type="button"
                   onClick={() => toggleValue(option.value)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors ${
-                    checked
-                      ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/30 dark:text-sky-300'
-                      : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
-                  }`}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors ${checked
+                    ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/30 dark:text-sky-300'
+                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                    }`}
                 >
                   <span className={`material-symbols-outlined text-base ${checked ? 'text-sky-600' : 'text-slate-300 dark:text-slate-600'}`}>
                     {checked ? 'check_box' : 'check_box_outline_blank'}
@@ -965,6 +989,7 @@ function MultiSelectDropdown({ label, options, selectedValues, onChange, placeho
 function Login({ setUser, setToken }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -988,25 +1013,49 @@ function Login({ setUser, setToken }) {
   return (
     <div className="relative isolate flex min-h-screen w-full bg-white text-slate-900 font-display">
       <div className="relative z-20 flex flex-col w-full lg:w-[45%] xl:w-[40%] bg-white border-r border-slate-200 shadow-2xl p-12 lg:p-24 justify-center">
-         <div className="flex items-center gap-3 mb-12"><div className="size-8 text-primary"><span className="material-symbols-outlined text-3xl font-black">finance_mode</span></div><h2 className="text-xl font-black tracking-tight uppercase">Analytics Pro</h2></div>
-         <h1 className="text-5xl font-black tracking-tighter mb-4">Sign in.</h1>
-         <p className="text-slate-400 text-lg mb-10">Access your enterprise data hub.</p>
-         {error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold">{error}</div>}
-         <form onSubmit={handleLogin} className="relative z-10 space-y-6">
-            <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/5 transition-all outline-none text-lg" value={email} onChange={e => setEmail(e.target.value)} type="email" autoComplete="email" placeholder="Enter your email" required /></div>
-            <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400 tracking-widest">Password</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/5 transition-all outline-none text-lg" value={password} onChange={e => setPassword(e.target.value)} type="password" autoComplete="current-password" placeholder="Enter your password" required /></div>
-            <button className="w-full bg-primary hover:bg-blue-700 text-white font-black text-xl h-16 rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95 mt-4" type="submit">LOGIN</button>
-         </form>
-         <p className="mt-10 text-center font-bold text-slate-500">Need an account? <Link to="/signup" className="text-primary hover:underline">Register Hub</Link></p>
+        <div className="flex items-center gap-3 mb-12"><div className="size-8 text-primary"><span className="material-symbols-outlined text-3xl font-black">finance_mode</span></div><h2 className="text-xl font-black tracking-tight uppercase">Analytics Pro</h2></div>
+        <h1 className="text-5xl font-black tracking-tighter mb-4">Sign in.</h1>
+        <p className="text-slate-400 text-lg mb-10">Access your enterprise data hub.</p>
+        {error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold">{error}</div>}
+        <form onSubmit={handleLogin} className="relative z-10 space-y-6">
+          <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/5 transition-all outline-none text-lg" value={email} onChange={e => setEmail(e.target.value)} type="email" autoComplete="email" placeholder="Enter your email" required /></div>
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Password</label>
+            <div className="relative">
+              <input
+                className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 pl-6 pr-16 font-bold placeholder:text-slate-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/5 transition-all outline-none text-lg"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                className="absolute inset-y-0 right-0 z-20 flex w-16 items-center justify-center text-slate-400 transition-colors hover:text-primary"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <span className="material-symbols-outlined text-[22px]">
+                  {showPassword ? 'visibility_off' : 'visibility'}
+                </span>
+              </button>
+            </div>
+          </div>
+          <button className="w-full bg-primary hover:bg-blue-700 text-white font-black text-xl h-16 rounded-2xl shadow-2xl shadow-primary/30 transition-all active:scale-95 mt-4" type="submit">LOGIN</button>
+        </form>
+        <p className="mt-10 text-center font-bold text-slate-500">Need an account? <Link to="/signup" className="text-primary hover:underline">Register Hub</Link></p>
       </div>
       <div className="pointer-events-none flex-1 bg-slate-50 relative overflow-hidden hidden lg:block">
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-20"><div className="animate-wave-1 absolute inset-0 bg-blue-500 rounded-[40%] blur-[100px]"></div></div>
-         <div className="relative z-10 p-24 h-full flex flex-col justify-end">
-            <div className="glass-panel p-12 rounded-[3.5rem] shadow-2xl max-w-lg animate-float">
-               <div className="text-sm font-black text-primary uppercase tracking-[4px] mb-4">Precision First</div>
-               <h2 className="text-4xl font-black tracking-tighter leading-tight">Predictive insights for high-growth teams.</h2>
-            </div>
-         </div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-20"><div className="animate-wave-1 absolute inset-0 bg-blue-500 rounded-[40%] blur-[100px]"></div></div>
+        <div className="relative z-10 p-24 h-full flex flex-col justify-end">
+          <div className="glass-panel p-12 rounded-[3.5rem] shadow-2xl max-w-lg animate-float">
+            <div className="text-sm font-black text-primary uppercase tracking-[4px] mb-4">Precision First</div>
+            <h2 className="text-4xl font-black tracking-tighter leading-tight">Predictive insights for high-growth teams.</h2>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1040,20 +1089,20 @@ function Signup() {
   return (
     <div className="relative isolate flex min-h-screen w-full bg-white text-slate-900 font-display">
       <div className="relative z-20 flex flex-col w-full lg:w-[45%] xl:w-[40%] bg-white border-r border-slate-200 shadow-2xl p-12 lg:p-24 justify-center">
-         <h1 className="text-5xl font-black tracking-tighter mb-4 text-primary">Join.</h1>
-         <p className="text-slate-400 text-lg mb-10">Create your unified dashboard profile.</p>
-         {error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold">{error}</div>}
-         <form onSubmit={handleSignup} className="space-y-6">
-            <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">NAME</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={name} onChange={e => setName(e.target.value)} type="text" autoComplete="name" placeholder="Your name" required /></div>
-            <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">EMAIL</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={email} onChange={e => setEmail(e.target.value)} type="email" autoComplete="email" placeholder="Your email" required /></div>
-            <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">PASSWORD</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={password} onChange={e => setPassword(e.target.value)} type="password" autoComplete="new-password" placeholder="Create a password" required /></div>
-            <button className="w-full bg-primary text-white font-black h-16 rounded-2xl text-xl mt-4" type="submit">CREATE HUB</button>
-         </form>
-         <p className="mt-8 text-center font-bold text-slate-500">Already a member? <Link to="/login" className="text-primary hover:underline">Log In</Link></p>
+        <h1 className="text-5xl font-black tracking-tighter mb-4 text-primary">Join.</h1>
+        <p className="text-slate-400 text-lg mb-10">Create your unified dashboard profile.</p>
+        {error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold">{error}</div>}
+        <form onSubmit={handleSignup} className="space-y-6">
+          <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">NAME</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={name} onChange={e => setName(e.target.value)} type="text" autoComplete="name" placeholder="Your name" required /></div>
+          <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">EMAIL</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={email} onChange={e => setEmail(e.target.value)} type="email" autoComplete="email" placeholder="Your email" required /></div>
+          <div className="space-y-2"><label className="text-xs font-black uppercase text-slate-400">PASSWORD</label><input className="relative z-10 block w-full appearance-none bg-slate-50 text-slate-900 caret-slate-900 border border-slate-100 rounded-2xl h-16 px-6 font-bold placeholder:text-slate-300 outline-none" value={password} onChange={e => setPassword(e.target.value)} type="password" autoComplete="new-password" placeholder="Create a password" required /></div>
+          <button className="w-full bg-primary text-white font-black h-16 rounded-2xl text-xl mt-4" type="submit">CREATE HUB</button>
+        </form>
+        <p className="mt-8 text-center font-bold text-slate-500">Already a member? <Link to="/login" className="text-primary hover:underline">Log In</Link></p>
       </div>
       <div className="pointer-events-none flex-1 bg-primary text-white p-24 flex flex-col justify-center items-center text-center">
-         <div className="text-[15rem] font-black opacity-10 absolute select-none">DATA</div>
-         <h2 className="text-6xl font-black tracking-tighter relative">Empower your strategy with AI.</h2>
+        <div className="text-[15rem] font-black opacity-10 absolute select-none">DATA</div>
+        <h2 className="text-6xl font-black tracking-tighter relative">Empower your strategy with AI.</h2>
       </div>
     </div>
   );
@@ -1062,6 +1111,11 @@ function Signup() {
 
 // Dashboard Summary
 function DashboardSummary() {
+  const productChartRef = useRef(null);
+  const trendChartRef = useRef(null);
+  const trendPanelRef = useRef(null);
+  const heatmapPanelRef = useRef(null);
+  const productPanelRef = useRef(null);
   const [summary, setSummary] = useState(null);
   const [viewYear, setViewYear] = useState('2024');
   const [showExplain, setShowExplain] = useState(false);
@@ -1111,15 +1165,15 @@ function DashboardSummary() {
     <div className="p-8 space-y-8 max-w-[1600px] mx-auto">
       {/* Header Info */}
       <div className="flex items-center justify-between">
-         <div>
-            <h1 className="text-3xl font-black tracking-tighter">Global Dashboard</h1>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[2px] mt-1">Cross-Functional Intelligence Hub | {viewYear}</p>
-         </div>
-         <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-            {['2023', '2024', '2025'].map(y => (
-              <button key={y} onClick={() => setViewYear(y)} className={`px-5 py-1.5 rounded-lg text-sm font-bold transition-all ${viewYear === y ? 'bg-white dark:bg-slate-700 text-primary shadow-sm' : 'text-slate-400'}`}>{y}</button>
-            ))}
-         </div>
+        <div>
+          <h1 className="text-3xl font-black tracking-tighter">Global Dashboard</h1>
+          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[2px] mt-1">Cross-Functional Intelligence Hub | {viewYear}</p>
+        </div>
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          {['2023', '2024', '2025'].map(y => (
+            <button key={y} onClick={() => setViewYear(y)} className={`px-5 py-1.5 rounded-lg text-sm font-bold transition-all ${viewYear === y ? 'bg-white dark:bg-slate-700 text-primary shadow-sm' : 'text-slate-400'}`}>{y}</button>
+          ))}
+        </div>
       </div>
 
       {/* KPI Stats */}
@@ -1133,100 +1187,104 @@ function DashboardSummary() {
       {/* Main Charts Section */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Trend Chart Card */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col h-[500px]">
-           <div className="flex justify-between items-start mb-8">
-              <div>
-                 <h4 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">Revenue & Profit Trend</h4>
-                 <div className="flex items-center gap-2 mt-1">
-                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Real-time analytical sync</span>
-                 </div>
+        <div ref={trendPanelRef} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col h-[500px] relative">
+          <DownloadButton chartRef={trendPanelRef} filename="dashboard-trend-panel" />
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h4 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">Revenue & Profit Trend</h4>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Real-time analytical sync</span>
               </div>
-              <div className="flex gap-2">
-                 <button onClick={() => setShowExplain(true)} className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 text-[10px] font-black rounded-xl border border-indigo-100 dark:border-indigo-800 hover:scale-105 active:scale-95 transition-all">EXPLAIN AI</button>
-                 <button className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-500 text-[10px] font-black rounded-xl border border-slate-100 dark:border-slate-700">COMPARE</button>
-              </div>
-           </div>
-           
-           <div className="flex-1 min-h-0">
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowExplain(true)} className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 text-[10px] font-black rounded-xl border border-indigo-100 dark:border-indigo-800 hover:scale-105 active:scale-95 transition-all">EXPLAIN AI</button>
+              <button className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-500 text-[10px] font-black rounded-xl border border-slate-100 dark:border-slate-700">COMPARE</button>
+            </div>
+          </div>
+
+          <div className="relative flex-1 min-h-0">
+            <div ref={trendChartRef} className="w-full h-full">
               <ResponsiveContainer width="100%" height="100%">
-                 <ComposedChart data={trendData} onClick={(e) => e && setDrillMonth(e.activeLabel)}>
-                    <defs>
-                       <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#4f46e5" stopOpacity={1} />
-                          <stop offset="100%" stopColor="#818cf8" stopOpacity={0.8} />
-                       </linearGradient>
-                    </defs>
-                    <XAxis dataKey="month_name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#94a3b8'}} dy={10} />
-                    <YAxis hide domain={[0, 'auto']} />
-                    <Tooltip cursor={{fill: 'rgba(79, 70, 229, 0.05)'}} contentStyle={{ borderRadius: '20px', border: 'none', background: '#0f172a', color: '#fff', padding: '15px' }} />
-                    <Bar dataKey="total_revenue" name="Revenue" fill="url(#barGrad)" radius={[10, 10, 0, 0]} barSize={35} />
-                    <Line type="monotone" dataKey="net_revenue" name="Profit" stroke="#f97316" strokeWidth={4} dot={{ r: 6, fill: '#f97316', strokeWidth: 3, stroke: '#fff' }} activeDot={{ r: 8 }} />
-                 </ComposedChart>
+                <ComposedChart data={trendData} onClick={(e) => e && setDrillMonth(e.activeLabel)}>
+                  <defs>
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#4f46e5" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#818cf8" stopOpacity={0.8} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month_name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} dy={10} />
+                  <YAxis hide domain={[0, 'auto']} />
+                  <Tooltip cursor={{ fill: 'rgba(79, 70, 229, 0.05)' }} contentStyle={{ borderRadius: '20px', border: 'none', background: '#0f172a', color: '#fff', padding: '15px' }} />
+                  <Bar dataKey="total_revenue" name="Revenue" fill="url(#barGrad)" radius={[10, 10, 0, 0]} barSize={35} />
+                  <Line type="monotone" dataKey="net_revenue" name="Profit" stroke="#f97316" strokeWidth={4} dot={{ r: 6, fill: '#f97316', strokeWidth: 3, stroke: '#fff' }} activeDot={{ r: 8 }} />
+                </ComposedChart>
               </ResponsiveContainer>
-           </div>
-           
-           <div className="flex justify-center gap-10 mt-8 pt-6 border-t border-slate-50 dark:border-slate-800">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-2 bg-primary rounded-full"></div>
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue</span>
-              </div>
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-2 bg-orange-500 rounded-full"></div>
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Profit</span>
-              </div>
-           </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-10 mt-8 pt-6 border-t border-slate-50 dark:border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-2 bg-primary rounded-full"></div>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Revenue</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-2 bg-orange-500 rounded-full"></div>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Profit</span>
+            </div>
+          </div>
         </div>
 
         {/* India Map Card */}
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 flex flex-col h-[500px] relative overflow-hidden group">
-           <div className="w-full flex justify-between items-start relative z-10">
-              <div>
-                 <h2 className="text-2xl font-black tracking-tighter">India Market Hubs</h2>
-                 <p className="text-xs text-slate-400 font-bold mt-1 uppercase">Strategic Regional distribution</p>
+        <div ref={heatmapPanelRef} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 flex flex-col h-[500px] relative overflow-hidden group">
+          <DownloadButton chartRef={heatmapPanelRef} filename="dashboard-heatmap-panel" />
+          <div className="w-full flex justify-between items-start relative z-10">
+            <div>
+              <h2 className="text-2xl font-black tracking-tighter">India Market Hubs</h2>
+              <p className="text-xs text-slate-400 font-bold mt-1 uppercase">Strategic Regional distribution</p>
+            </div>
+            {hasData ? (
+              <div className="flex items-center gap-2 bg-rose-50 text-rose-500 px-3 py-1 rounded-full border border-rose-100">
+                <div className="w-2 h-2 bg-rose-500 rounded-full animate-ping"></div>
+                <span className="text-[10px] font-black uppercase">Active Nodes</span>
               </div>
-              {hasData ? (
-                <div className="flex items-center gap-2 bg-rose-50 text-rose-500 px-3 py-1 rounded-full border border-rose-100">
-                   <div className="w-2 h-2 bg-rose-500 rounded-full animate-ping"></div>
-                   <span className="text-[10px] font-black uppercase">Active Nodes</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 bg-slate-50 text-slate-500 px-3 py-1 rounded-full border border-slate-100">
-                   <span className="text-[10px] font-black uppercase">No Data</span>
-                </div>
-              )}
-           </div>
-           
-           <div className="relative flex-1 -mt-4">
-              <IndiaHeatMap stateData={regionData} hasData={hasData} showHeatScale={false} />
-           </div>
-           
-           <div className="grid grid-cols-2 gap-4 mt-auto relative z-10">
-              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4 border border-slate-100 dark:border-slate-800 group/item hover:bg-white dark:hover:bg-slate-800 transition-all cursor-default">
-                 <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-primary shadow-sm group-hover/item:rotate-12 transition-all"><span className="material-symbols-outlined">location_on</span></div>
-                 <div><div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Top State</div><div className="text-sm font-black text-slate-900 dark:text-white">{hasData && topStateEntry ? topStateEntry[0] : 'No Data'}</div></div>
+            ) : (
+              <div className="flex items-center gap-2 bg-slate-50 text-slate-500 px-3 py-1 rounded-full border border-slate-100">
+                <span className="text-[10px] font-black uppercase">No Data</span>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4 border border-slate-100 dark:border-slate-800 group/item hover:bg-white dark:hover:bg-slate-800 transition-all cursor-default">
-                 <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-rose-500 shadow-sm group-hover/item:rotate-12 transition-all"><span className="material-symbols-outlined">local_fire_department</span></div>
-                 <div><div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Active States</div><div className="text-sm font-black text-slate-900 dark:text-white">{hasData ? activeStatesCount : 'No Data'}</div></div>
-              </div>
-           </div>
+            )}
+          </div>
+
+          <div className="relative flex-1 -mt-4">
+            <IndiaHeatMap stateData={regionData} hasData={hasData} showHeatScale={false} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-auto relative z-10">
+            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4 border border-slate-100 dark:border-slate-800 group/item hover:bg-white dark:hover:bg-slate-800 transition-all cursor-default">
+              <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-primary shadow-sm group-hover/item:rotate-12 transition-all"><span className="material-symbols-outlined">location_on</span></div>
+              <div><div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Top State</div><div className="text-sm font-black text-slate-900 dark:text-white">{hasData && topStateEntry ? topStateEntry[0] : 'No Data'}</div></div>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center gap-4 border border-slate-100 dark:border-slate-800 group/item hover:bg-white dark:hover:bg-slate-800 transition-all cursor-default">
+              <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-rose-500 shadow-sm group-hover/item:rotate-12 transition-all"><span className="material-symbols-outlined">local_fire_department</span></div>
+              <div><div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Active States</div><div className="text-sm font-black text-slate-900 dark:text-white">{hasData ? activeStatesCount : 'No Data'}</div></div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Categories & Performance Area */}
       {hasData ? (
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-12">
-        <DonutChartCard data={categoryArray} />
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col h-full ring-1 ring-black/5">
-           <div className="flex justify-between items-start mb-10">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-12">
+          <DonutChartCard data={categoryArray} />
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col h-full ring-1 ring-black/5">
+            <div className="flex justify-between items-start mb-10">
               <div>
-                 <h2 className="text-2xl font-black tracking-tighter uppercase">Sales by Category</h2>
-                 <p className="text-xs text-slate-400 font-bold mt-1">Imported category totals from your latest data</p>
+                <h2 className="text-2xl font-black tracking-tighter uppercase">Sales by Category</h2>
+                <p className="text-xs text-slate-400 font-bold mt-1">Imported category totals from your latest data</p>
               </div>
               <div className="text-primary text-[10px] font-black uppercase tracking-widest px-4 py-2 bg-primary/5 rounded-xl">{Object.keys(categoryData).length} categories</div>
-           </div>
-           <div className="space-y-4">
+            </div>
+            <div className="space-y-4">
               {Object.entries(categoryData)
                 .sort(([, leftValue], [, rightValue]) => rightValue - leftValue)
                 .map(([name, value], index, entries) => {
@@ -1249,15 +1307,15 @@ function DashboardSummary() {
                     />
                   );
                 })}
-           </div>
+            </div>
+          </div>
         </div>
-      </div>
       ) : (
-      <div className="pb-12 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 p-12 text-center">
-        <div className="text-5xl mb-4">📊</div>
-        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">No Data Available</h3>
-        <p className="text-slate-500 dark:text-slate-400">Import data to see market distribution and performance metrics</p>
-      </div>
+        <div className="pb-12 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 p-12 text-center">
+          <div className="text-5xl mb-4">📊</div>
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">No Data Available</h3>
+          <p className="text-slate-500 dark:text-slate-400">Import data to see market distribution and performance metrics</p>
+        </div>
       )}
 
       {/* Modal Overlays */}
@@ -1270,34 +1328,34 @@ function DashboardSummary() {
 function ExplainModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={onClose}></div>
-       <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl p-10 border border-slate-200 dark:border-slate-800 group">
-          <button onClick={onClose} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all"><span className="material-symbols-outlined">close</span></button>
-          <div className="flex items-center gap-4 mb-8">
-             <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl flex items-center justify-center text-indigo-600 animate-bounce"><span className="material-symbols-outlined text-3xl">auto_awesome</span></div>
-             <div>
-                <h3 className="text-2xl font-black tracking-tighter">AI Explainability</h3>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Powered by Yua AI Intelligence</p>
-             </div>
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={onClose}></div>
+      <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl p-10 border border-slate-200 dark:border-slate-800 group">
+        <button onClick={onClose} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all"><span className="material-symbols-outlined">close</span></button>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl flex items-center justify-center text-indigo-600 animate-bounce"><span className="material-symbols-outlined text-3xl">auto_awesome</span></div>
+          <div>
+            <h3 className="text-2xl font-black tracking-tighter">AI Explainability</h3>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Powered by Yua AI Intelligence</p>
           </div>
-          <div className="space-y-6 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-             <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border-l-4 border-indigo-500">
-                <p className="text-sm font-bold text-slate-900 dark:text-white mb-2">Trend Analysis Summary</p>
-                <p className="text-sm">Revenue peaked in June (₹6L) due to Q2 fiscal closures. Festive spending uplift of 18% noted in Q4. April dip is a recurring seasonal procurement lull.</p>
-             </div>
-             <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-800">
-                   <div className="text-[10px] font-black text-emerald-600 uppercase mb-1">Growth Driver</div>
-                   <p className="text-sm font-bold text-slate-900 dark:text-white">Cloud Systems (+42%)</p>
-                </div>
-                <div className="p-4 bg-rose-50 dark:bg-rose-950/20 rounded-2xl border border-rose-100 dark:border-rose-800">
-                   <div className="text-[10px] font-black text-rose-600 uppercase mb-1">Alert Factor</div>
-                   <p className="text-sm font-bold text-slate-900 dark:text-white">Retail Attrition (-5%)</p>
-                </div>
-             </div>
+        </div>
+        <div className="space-y-6 text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border-l-4 border-indigo-500">
+            <p className="text-sm font-bold text-slate-900 dark:text-white mb-2">Trend Analysis Summary</p>
+            <p className="text-sm">Revenue peaked in June (₹6L) due to Q2 fiscal closures. Festive spending uplift of 18% noted in Q4. April dip is a recurring seasonal procurement lull.</p>
           </div>
-          <button onClick={onClose} className="w-full mt-10 bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all">GENERATE FULL REPORT</button>
-       </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-800">
+              <div className="text-[10px] font-black text-emerald-600 uppercase mb-1">Growth Driver</div>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">Cloud Systems (+42%)</p>
+            </div>
+            <div className="p-4 bg-rose-50 dark:bg-rose-950/20 rounded-2xl border border-rose-100 dark:border-rose-800">
+              <div className="text-[10px] font-black text-rose-600 uppercase mb-1">Alert Factor</div>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">Retail Attrition (-5%)</p>
+            </div>
+          </div>
+        </div>
+        <button onClick={onClose} className="w-full mt-10 bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all">GENERATE FULL REPORT</button>
+      </div>
     </div>
   );
 }
@@ -1305,41 +1363,41 @@ function ExplainModal({ onClose }) {
 function DrilldownModal({ month, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={onClose}></div>
-       <div className="relative w-full max-w-lg bg-card-light dark:bg-slate-800 rounded-[2.5rem] shadow-2xl p-8 border border-slate-200 dark:border-slate-700">
-          <div className="flex justify-between items-center mb-8">
-             <h3 className="text-2xl font-black tracking-tighter uppercase">{month} Breakdown</h3>
-             <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
+      <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="relative w-full max-w-lg bg-card-light dark:bg-slate-800 rounded-[2.5rem] shadow-2xl p-8 border border-slate-200 dark:border-slate-700">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-black tracking-tighter uppercase">{month} Breakdown</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
+        </div>
+        <div className="space-y-4">
+          <div className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-2xl flex justify-between items-center">
+            <span className="text-sm font-bold text-slate-500">Peak Performance Day</span>
+            <span className="text-sm font-black">21st (₹45k)</span>
           </div>
-          <div className="space-y-4">
-             <div className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-2xl flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-500">Peak Performance Day</span>
-                <span className="text-sm font-black">21st (₹45k)</span>
-             </div>
-             <div className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-2xl flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-500">Active Clients</span>
-                <span className="text-sm font-black">42 Entities</span>
-             </div>
-             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl border border-indigo-100 dark:border-indigo-800">
-                <div className="text-xs font-black text-indigo-600 uppercase mb-2">Category Split</div>
-                <div className="space-y-1">
-                   <div className="flex justify-between text-xs font-bold"><span>Electronics</span><span>55%</span></div>
-                   <div className="w-full h-1 bg-indigo-200 dark:bg-indigo-800 rounded-full overflow-hidden"><div className="h-full bg-indigo-600 w-[55%]"></div></div>
-                </div>
-             </div>
+          <div className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-2xl flex justify-between items-center">
+            <span className="text-sm font-bold text-slate-500">Active Clients</span>
+            <span className="text-sm font-black">42 Entities</span>
           </div>
-          <button onClick={onClose} className="w-full mt-8 py-3 bg-slate-900 text-white rounded-xl font-black">CLOSE DATA VIEW</button>
-       </div>
+          <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl border border-indigo-100 dark:border-indigo-800">
+            <div className="text-xs font-black text-indigo-600 uppercase mb-2">Category Split</div>
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs font-bold"><span>Electronics</span><span>55%</span></div>
+              <div className="w-full h-1 bg-indigo-200 dark:bg-indigo-800 rounded-full overflow-hidden"><div className="h-full bg-indigo-600 w-[55%]"></div></div>
+            </div>
+          </div>
+        </div>
+        <button onClick={onClose} className="w-full mt-8 py-3 bg-slate-900 text-white rounded-xl font-black">CLOSE DATA VIEW</button>
+      </div>
     </div>
   );
 }
 
 function StatCard({ title, value, change, icon, color, forecast }) {
-  const colorClasses = { 
-    indigo: 'bg-indigo-500 text-white shadow-indigo-500/20', 
-    emerald: 'bg-emerald-500 text-white shadow-emerald-500/20', 
-    blue: 'bg-blue-500 text-white shadow-blue-500/20', 
-    amber: 'bg-amber-500 text-white shadow-amber-500/20' 
+  const colorClasses = {
+    indigo: 'bg-indigo-500 text-white shadow-indigo-500/20',
+    emerald: 'bg-emerald-500 text-white shadow-emerald-500/20',
+    blue: 'bg-blue-500 text-white shadow-blue-500/20',
+    amber: 'bg-amber-500 text-white shadow-amber-500/20'
   };
   const isPositive = change.startsWith('+');
   const isNegative = change.startsWith('-');
@@ -1348,18 +1406,18 @@ function StatCard({ title, value, change, icon, color, forecast }) {
 
   return (
     <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-lg border border-slate-100 dark:border-slate-800 transition-all hover:-translate-y-2 group">
-       <div className="flex justify-between items-start mb-6">
-          <div className={`p-3 rounded-2xl ${colorClasses[color]} group-hover:scale-110 transition-transform`}><span className="material-symbols-outlined text-2xl leading-none">{icon}</span></div>
-          <div className={`flex items-center gap-1 ${trendClasses} font-black text-xs`}>
-             <span className="material-symbols-outlined text-sm">{trendIcon}</span> {change}
-          </div>
-       </div>
-       <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{title}</div>
-       <div className="text-4xl font-black tracking-tighter mb-4 text-slate-900 dark:text-white uppercase">{value}</div>
-       <div className="pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
-          <p className="text-[10px] text-slate-400 font-bold italic truncate uppercase">{forecast}</p>
-       </div>
+      <div className="flex justify-between items-start mb-6">
+        <div className={`p-3 rounded-2xl ${colorClasses[color]} group-hover:scale-110 transition-transform`}><span className="material-symbols-outlined text-2xl leading-none">{icon}</span></div>
+        <div className={`flex items-center gap-1 ${trendClasses} font-black text-xs`}>
+          <span className="material-symbols-outlined text-sm">{trendIcon}</span> {change}
+        </div>
+      </div>
+      <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{title}</div>
+      <div className="text-4xl font-black tracking-tighter mb-4 text-slate-900 dark:text-white uppercase">{value}</div>
+      <div className="pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
+        <p className="text-[10px] text-slate-400 font-bold italic truncate uppercase">{forecast}</p>
+      </div>
     </div>
   );
 }
@@ -1368,17 +1426,17 @@ function MapDot({ top, left, label, value, color }) {
   const [show, setShow] = useState(false);
   return (
     <div className="absolute cursor-pointer perspective-container" style={{ top, left }} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
-       <div className={`w-4 h-4 ${color} rounded-full border-2 border-white dark:border-slate-800 shadow-2xl relative z-20 transition-transform hover:scale-150`}>
-          <div className={`absolute inset-0 rounded-full ${color} animate-ping opacity-75`}></div>
-       </div>
-       {show && (
-         <div className="absolute left-1/2 -translate-x-1/2 bottom-8 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-[10px] whitespace-nowrap z-50 animate-in zoom-in duration-200">
-            <div className="font-black border-b border-white/10 pb-1 mb-1">{label}</div>
-            <div className="flex justify-between gap-4 font-bold opacity-80"><span>Revenue:</span><span>{value}</span></div>
-            <div className="flex justify-between gap-4 font-bold opacity-80"><span>Status:</span><span className="text-emerald-400">OPTIMAL</span></div>
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
-         </div>
-       )}
+      <div className={`w-4 h-4 ${color} rounded-full border-2 border-white dark:border-slate-800 shadow-2xl relative z-20 transition-transform hover:scale-150`}>
+        <div className={`absolute inset-0 rounded-full ${color} animate-ping opacity-75`}></div>
+      </div>
+      {show && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-[10px] whitespace-nowrap z-50 animate-in zoom-in duration-200">
+          <div className="font-black border-b border-white/10 pb-1 mb-1">{label}</div>
+          <div className="flex justify-between gap-4 font-bold opacity-80"><span>Revenue:</span><span>{value}</span></div>
+          <div className="flex justify-between gap-4 font-bold opacity-80"><span>Status:</span><span className="text-emerald-400">OPTIMAL</span></div>
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1557,42 +1615,47 @@ function IndiaHeatMap({ stateData, hasData, showHeatScale = true, mapScale = 1 }
 }
 
 function DonutChartCard({ data }) {
+  const productChartRef = useRef(null);
+  const productPanelRef = useRef(null);
   const [hoveredData, setHoveredData] = useState(null);
-  
+
   const chartData = data && data.length > 0 ? data : [
     { name: 'No Data', value: 100, color: '#e2e8f0', amount: '₹0L' }
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center group">
-       <div className="w-full flex justify-between items-start mb-4">
-          <div><h2 className="text-2xl font-black tracking-tighter uppercase">Category Split</h2><p className="text-xs text-slate-400 font-bold uppercase mt-1">Market distribution analysis</p></div>
-          <span className="material-symbols-outlined text-slate-300">info</span>
-       </div>
-       <div className="relative w-64 h-64 my-6">
+    <div ref={productPanelRef} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center group relative">
+      <DownloadButton chartRef={productPanelRef} filename="dashboard-category-split-panel" />
+      <div className="w-full flex justify-between items-start mb-4">
+        <div><h2 className="text-2xl font-black tracking-tighter uppercase">Category Split</h2><p className="text-xs text-slate-400 font-bold uppercase mt-1">Market distribution analysis</p></div>
+        <span className="material-symbols-outlined text-slate-300">info</span>
+      </div>
+      <div className="relative w-64 h-64 my-6">
+        <div ref={productChartRef} className="w-full h-full">
           <ResponsiveContainer width="100%" height="100%">
-             <PieChart>
-                <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={80} outerRadius={110} paddingAngle={4} onMouseEnter={(e) => setHoveredData(e)} onMouseLeave={() => setHoveredData(null)}>
-                   {chartData.map((entry, index) => <Cell key={index} fill={entry.color} stroke="none" className="hover:opacity-80 transition-opacity outline-none" />)}
-                </Pie>
-             </PieChart>
+            <PieChart>
+              <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={80} outerRadius={110} paddingAngle={4} onMouseEnter={(e) => setHoveredData(e)} onMouseLeave={() => setHoveredData(null)}>
+                {chartData.map((entry, index) => <Cell key={index} fill={entry.color} stroke="none" className="hover:opacity-80 transition-opacity outline-none" />)}
+              </Pie>
+            </PieChart>
           </ResponsiveContainer>
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-300">
-             <div className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">{hoveredData ? hoveredData.amount : '100%'}</div>
-             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{hoveredData ? hoveredData.name : 'Total Impact'}</div>
-          </div>
-       </div>
-       <div className="flex justify-between w-full px-4 border-t border-slate-50 dark:border-slate-800 pt-8 mt-auto">
-          {chartData.map(d => (
-            <div key={d.name} className="flex flex-col items-center group/leg cursor-pointer transition-all" onMouseEnter={() => setHoveredData(d)} onMouseLeave={() => setHoveredData(null)}>
-               <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }}></div>
-                  <span className="text-[10px] font-black uppercase text-slate-400 group-hover/leg:text-slate-900 dark:group-hover/leg:text-white transition-colors">{d.name}</span>
-               </div>
-               <span className="text-sm font-black text-slate-900 dark:text-white">{d.value}%</span>
+        </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all duration-300">
+          <div className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">{hoveredData ? hoveredData.amount : '100%'}</div>
+          <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{hoveredData ? hoveredData.name : 'Total Impact'}</div>
+        </div>
+      </div>
+      <div className="flex justify-between w-full px-4 border-t border-slate-50 dark:border-slate-800 pt-8 mt-auto">
+        {chartData.map(d => (
+          <div key={d.name} className="flex flex-col items-center group/leg cursor-pointer transition-all" onMouseEnter={() => setHoveredData(d)} onMouseLeave={() => setHoveredData(null)}>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }}></div>
+              <span className="text-[10px] font-black uppercase text-slate-400 group-hover/leg:text-slate-900 dark:group-hover/leg:text-white transition-colors">{d.name}</span>
             </div>
-          ))}
-       </div>
+            <span className="text-sm font-black text-slate-900 dark:text-white">{d.value}%</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1601,27 +1664,27 @@ function PerformanceBar({ label, value, progress, icon, growth, color, badge, tr
   const resolvedTrendTone = trendTone || (growth.startsWith('+') ? 'positive' : growth.startsWith('-') ? 'negative' : 'neutral');
   return (
     <div className="p-5 rounded-[1.5rem] border border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all group/bar">
-       <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-             <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 group-hover/bar:bg-white dark:group-hover/bar:bg-slate-900 group-hover/bar:text-primary transition-all shadow-sm"><span className="material-symbols-outlined text-3xl">{icon}</span></div>
-             <div>
-                <div className="text-base font-black flex items-center gap-2 text-slate-900 dark:text-white">
-                   {label} {badge && <span className="bg-primary/10 text-primary text-[8px] px-2 py-1 rounded font-black tracking-widest leading-none">{badge}</span>}
-                </div>
-                <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Cross-unit performance</div>
-             </div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 group-hover/bar:bg-white dark:group-hover/bar:bg-slate-900 group-hover/bar:text-primary transition-all shadow-sm"><span className="material-symbols-outlined text-3xl">{icon}</span></div>
+          <div>
+            <div className="text-base font-black flex items-center gap-2 text-slate-900 dark:text-white">
+              {label} {badge && <span className="bg-primary/10 text-primary text-[8px] px-2 py-1 rounded font-black tracking-widest leading-none">{badge}</span>}
+            </div>
+            <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Cross-unit performance</div>
           </div>
-          <div className="text-right">
-             <div className="text-base font-black text-slate-900 dark:text-white">{value}</div>
-             <div className={`text-[10px] font-black flex items-center justify-end gap-1 ${resolvedTrendTone === 'positive' ? 'text-emerald-500' : resolvedTrendTone === 'negative' ? 'text-rose-500' : 'text-slate-400 dark:text-slate-300'}`}>
-                {resolvedTrendTone === 'positive' ? <span className="material-symbols-outlined text-[10px]">north</span> : resolvedTrendTone === 'negative' ? <span className="material-symbols-outlined text-[10px]">south</span> : <span className="material-symbols-outlined text-[10px]">donut_small</span>}
-                {growth}
-             </div>
+        </div>
+        <div className="text-right">
+          <div className="text-base font-black text-slate-900 dark:text-white">{value}</div>
+          <div className={`text-[10px] font-black flex items-center justify-end gap-1 ${resolvedTrendTone === 'positive' ? 'text-emerald-500' : resolvedTrendTone === 'negative' ? 'text-rose-500' : 'text-slate-400 dark:text-slate-300'}`}>
+            {resolvedTrendTone === 'positive' ? <span className="material-symbols-outlined text-[10px]">north</span> : resolvedTrendTone === 'negative' ? <span className="material-symbols-outlined text-[10px]">south</span> : <span className="material-symbols-outlined text-[10px]">donut_small</span>}
+            {growth}
           </div>
-       </div>
-       <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-          <div className={`h-full ${color} rounded-full transition-all duration-1000 group-hover/bar:scale-x-105 origin-left shadow-lg`} style={{ width: `${progress}%` }}></div>
-       </div>
+        </div>
+      </div>
+      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+        <div className={`h-full ${color} rounded-full transition-all duration-1000 group-hover/bar:scale-x-105 origin-left shadow-lg`} style={{ width: `${progress}%` }}></div>
+      </div>
     </div>
   );
 }
@@ -1629,9 +1692,9 @@ function PerformanceBar({ label, value, progress, icon, growth, color, badge, tr
 function FilterButton({ icon, label, count }) {
   return (
     <button className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 transition-all flex items-center gap-3 group shadow-sm">
-       <span className="material-symbols-outlined text-base group-hover:text-primary transition-colors">{icon}</span> 
-       <span>{label}</span>
-       {count && <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[8px] opacity-70">{count}</span>}
+      <span className="material-symbols-outlined text-base group-hover:text-primary transition-colors">{icon}</span>
+      <span>{label}</span>
+      {count && <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[8px] opacity-70">{count}</span>}
     </button>
   );
 }
@@ -1656,11 +1719,10 @@ function ProjectCard({ project, isFavorite, onToggleFavorite, onEditProject }) {
             event.stopPropagation();
             onToggleFavorite(project.id);
           }}
-          className={`absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border transition-all opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto ${
-            isFavorite
-              ? 'border-amber-300 bg-amber-100 text-amber-500'
-              : 'border-white/70 bg-white/85 text-slate-500 hover:text-amber-500'
-          }`}
+          className={`absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border transition-all opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto ${isFavorite
+            ? 'border-amber-300 bg-amber-100 text-amber-500'
+            : 'border-white/70 bg-white/85 text-slate-500 hover:text-amber-500'
+            }`}
           aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
@@ -2193,6 +2255,10 @@ function FavoritesList() {
 }
 
 function ReportsPage() {
+  const monthlyTrendChartRef = useRef(null);
+  const categoryChartRef = useRef(null);
+  const reportTrendPanelRef = useRef(null);
+  const reportCategoryPanelRef = useRef(null);
   const [reports, setReports] = useState([]);
   const [isLoadingReports, setIsLoadingReports] = useState(true);
   const token = localStorage.getItem('token');
@@ -2313,34 +2379,38 @@ function ReportsPage() {
               </div>
 
               <div className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1.15fr_0.85fr]">
-                <AnalyticsPanel title="Revenue & Profit Trend" subtitle="Monthly movement from uploaded report rows">
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart data={report.trendSeries}>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                        <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                        <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                        <Tooltip formatter={(value, name) => [formatInrCompact(value), name]} />
-                        <Legend />
-                        <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#38bdf8" radius={[10, 10, 0, 0]} />
-                        <Line yAxisId="right" type="monotone" dataKey="profit" name="Profit" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
-                      </ComposedChart>
-                    </ResponsiveContainer>
+                <AnalyticsPanel title="Revenue & Profit Trend" subtitle="Monthly movement from uploaded report rows" downloadRef={reportTrendPanelRef} downloadFilename="report-trend-panel" panelRef={reportTrendPanelRef}>
+                  <div className="relative h-64">
+                    <div ref={monthlyTrendChartRef} className="w-full h-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={report.trendSeries}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                          <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                          <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                          <Tooltip formatter={(value, name) => [formatInrCompact(value), name]} />
+                          <Legend />
+                          <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#38bdf8" radius={[10, 10, 0, 0]} />
+                          <Line yAxisId="right" type="monotone" dataKey="profit" name="Profit" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </AnalyticsPanel>
 
-                <AnalyticsPanel title="Category Share" subtitle="Revenue contribution by category">
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={report.categorySeries} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={4}>
-                          {report.categorySeries.map((entry) => <Cell key={`${report.project.id}-${entry.name}`} fill={entry.color} />)}
-                        </Pie>
-                        <Tooltip formatter={(value, name) => [formatInrCompact(value), name]} />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
+                <AnalyticsPanel title="Category Share" subtitle="Revenue contribution by category" downloadRef={reportCategoryPanelRef} downloadFilename="report-category-share-panel" panelRef={reportCategoryPanelRef}>
+                  <div className="relative h-64">
+                    <div ref={categoryChartRef} className="w-full h-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie data={report.categorySeries} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={4}>
+                            {report.categorySeries.map((entry) => <Cell key={`${report.project.id}-${entry.name}`} fill={entry.color} />)}
+                          </Pie>
+                          <Tooltip formatter={(value, name) => [formatInrCompact(value), name]} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </AnalyticsPanel>
               </div>
@@ -2517,6 +2587,8 @@ function SettingsPage({ user }) {
 }
 
 function StoreDetailAnalytics() {
+  const regionChartRef = useRef(null);
+  const barChartRef1 = useRef(null);
   const { projectId } = useParams();
   const [data, setData] = useState([]);
   const token = localStorage.getItem('token');
@@ -2550,45 +2622,60 @@ function StoreDetailAnalytics() {
   return (
     <div className="p-10 space-y-10 max-w-7xl mx-auto">
       <div className="flex justify-between items-center border-b pb-8 border-slate-100 dark:border-slate-800">
-         <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase">Store Intelligence</h1>
-            <div className="flex items-center gap-2 mt-2">
-               <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Node SID-00{projectId} | Connected</span>
-            </div>
-         </div>
-         <button onClick={handleDeleteData} className="px-6 py-3 border border-rose-100 text-rose-500 font-black text-xs rounded-2xl hover:bg-rose-50 transition-all uppercase tracking-widest">Discard Hub Records</button>
+        <div>
+          <h1 className="text-4xl font-black tracking-tighter uppercase">Store Intelligence</h1>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Node SID-00{projectId} | Connected</span>
+          </div>
+        </div>
+        <button onClick={handleDeleteData} className="px-6 py-3 border border-rose-100 text-rose-500 font-black text-xs rounded-2xl hover:bg-rose-50 transition-all uppercase tracking-widest">Discard Hub Records</button>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
-         <ChartCard title="Regional Velocity" icon="public" color="blue">
-            <div className="h-80"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={regionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} stroke="none">{regionData.map((e, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}</Pie><Tooltip /><Legend /></PieChart></ResponsiveContainer></div>
-         </ChartCard>
-         <ChartCard title="Revenue Growth" icon="trending_up" color="emerald">
-            <div className="h-80">
-               <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data}>
-                     <XAxis dataKey="month_name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900}} />
-                     <Tooltip contentStyle={{borderRadius: '20px', border: 'none', background: '#0f172a', color: '#fff'}} />
-                     <Bar dataKey="total_revenue" fill="#10b981" radius={[10, 10, 0, 0]} />
-                  </BarChart>
-               </ResponsiveContainer>
+        <ChartCard title="Regional Velocity" icon="public" color="blue" downloadRef={regionChartRef} downloadFilename="region-velocity-chart">
+          <div className="relative">
+            <div ref={regionChartRef} className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={regionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} stroke="none">
+                    {regionData.map((e, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-         </ChartCard>
+          </div>
+        </ChartCard>
+        <ChartCard title="Revenue Growth" icon="trending_up" color="emerald" downloadRef={barChartRef1} downloadFilename="revenue-growth-chart">
+          <div className="relative h-80">
+            <div ref={barChartRef1} className="w-full h-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data}>
+                  <XAxis dataKey="month_name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900 }} />
+                  <Tooltip contentStyle={{ borderRadius: '20px', border: 'none', background: '#0f172a', color: '#fff' }} />
+                  <Bar dataKey="total_revenue" fill="#10b981" radius={[10, 10, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </ChartCard>
       </div>
     </div>
   );
 }
 
-function ChartCard({ title, icon, color, children }) {
+function ChartCard({ title, icon, color, children, downloadRef, downloadFilename }) {
   return (
     <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-none relative group">
-       <div className="flex items-center justify-between mb-10">
-          <h3 className="font-black text-[10px] opacity-40 uppercase tracking-[4px] flex items-center gap-3">
-             <span className="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform">{icon}</span> {title}
-          </h3>
-          <span className="material-symbols-outlined text-slate-200">more_horiz</span>
-       </div>
-       {children}
+      {downloadRef && <DownloadButton chartRef={downloadRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
+      <div className="flex items-center justify-between mb-10">
+        <h3 className="font-black text-[10px] opacity-40 uppercase tracking-[4px] flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform">{icon}</span> {title}
+        </h3>
+        <span className="material-symbols-outlined text-slate-200">more_horiz</span>
+      </div>
+      {children}
     </div>
   );
 }
@@ -3015,6 +3102,14 @@ function downloadProjectReportPdf(report) {
 }
 
 function AdvancedAnalyticsBoard() {
+  const monthlyTrendChartRef = useRef(null);
+  const topProductsChartRef = useRef(null);
+  const pieChartRef1 = useRef(null);
+  const histogramChartRef = useRef(null);
+  const projectionChartRef = useRef(null);
+  const stateMapPanelRef = useRef(null);
+  const topRegionsPanelRef = useRef(null);
+  const overviewPanelRef = useRef(null);
   const { projectId } = useParams();
   const location = useLocation();
   const token = localStorage.getItem('token');
@@ -3416,61 +3511,65 @@ function AdvancedAnalyticsBoard() {
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[0.95fr_1.45fr]">
-        <AnalyticsPanel title="Sales By Region" subtitle="Dynamic India heat map from uploaded state data">
+        <AnalyticsPanel title="Sales By Region" subtitle="Dynamic India heat map from uploaded state data" downloadRef={stateMapPanelRef} downloadFilename="sales-by-region-heatmap" panelRef={stateMapPanelRef}>
           <div className="h-[420px]">
             <IndiaHeatMap stateData={stateMapData} hasData={Object.keys(stateMapData).length > 0} mapScale={0.93} />
           </div>
         </AnalyticsPanel>
 
         <div className="self-stretch">
-        <AnalyticsPanel title="Revenue & Profit Trend" subtitle="One bar graph plus one line graph, driven by backend totals" className="h-full">
-          <div className="h-[420px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={monthlyTrendRows}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                <Tooltip
-                  formatter={(value, name, item) => {
-                    const metricName = item?.dataKey === 'profit' ? 'Profit' : 'Revenue';
-                    return [formatInrCompact(value), metricName];
-                  }}
-                />
-                <Legend />
-                <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#38bdf8" radius={[10, 10, 0, 0]} />
-                <Line yAxisId="right" type="monotone" dataKey="profit" name="Profit" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-        </AnalyticsPanel>
+          <AnalyticsPanel title="Revenue & Profit Trend" subtitle="One bar graph plus one line graph, driven by backend totals" className="h-full" downloadRef={monthlyTrendChartRef} downloadFilename="monthly-trend-chart">
+            <div className="relative h-[420px]">
+              <div ref={monthlyTrendChartRef} className="w-full h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={monthlyTrendRows}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                    <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                    <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      formatter={(value, name, item) => {
+                        const metricName = item?.dataKey === 'profit' ? 'Profit' : 'Revenue';
+                        return [formatInrCompact(value), metricName];
+                      }}
+                    />
+                    <Legend />
+                    <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#38bdf8" radius={[10, 10, 0, 0]} />
+                    <Line yAxisId="right" type="monotone" dataKey="profit" name="Profit" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </AnalyticsPanel>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-2 2xl:grid-cols-[1fr_1fr_0.95fr] items-start">
         <div className="space-y-8">
-          <AnalyticsPanel title="Bar Chart" subtitle={`${selectedYAxisLabel} by Product`} className="min-h-[28rem]">
+          <AnalyticsPanel title="Bar Chart" subtitle={`${selectedYAxisLabel} by Product`} className="min-h-[28rem]" downloadRef={topProductsChartRef} downloadFilename="top-products-chart">
             <div className="max-h-[24rem] overflow-y-auto pr-1">
-              <div style={{ height: `${Math.max(320, topProductsChartData.length * 34)}px`, minHeight: '320px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topProductsChartData} layout="vertical" margin={{ left: 10, right: 10 }}>
-                  <CartesianGrid horizontal={false} strokeDasharray="3 3" opacity={0.12} />
-                  <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                  <YAxis type="category" dataKey="name" interval={0} width={130} axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} tickFormatter={(label) => String(label || 'Unknown')} />
-                  <Tooltip
-                    formatter={(value) => [formatMetricValue(selectedYAxis, value), selectedYAxisLabel]}
-                    labelFormatter={(label) => `Product: ${label}`}
-                  />
-                  <Bar dataKey="value" name={selectedYAxisLabel} radius={[0, 10, 10, 0]}>
-                    {topProductsChartData.map((entry) => <Cell key={entry.name} fill={entry.fill} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="relative" style={{ height: `${Math.max(320, topProductsChartData.length * 34)}px`, minHeight: '320px' }}>
+                <div ref={topProductsChartRef} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={topProductsChartData} layout="vertical" margin={{ left: 10, right: 10 }}>
+                      <CartesianGrid horizontal={false} strokeDasharray="3 3" opacity={0.12} />
+                      <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                      <YAxis type="category" dataKey="name" interval={0} width={130} axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} tickFormatter={(label) => String(label || 'Unknown')} />
+                      <Tooltip
+                        formatter={(value) => [formatMetricValue(selectedYAxis, value), selectedYAxisLabel]}
+                        labelFormatter={(label) => `Product: ${label}`}
+                      />
+                      <Bar dataKey="value" name={selectedYAxisLabel} radius={[0, 10, 10, 0]}>
+                        {topProductsChartData.map((entry) => <Cell key={entry.name} fill={entry.fill} />)}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
           </AnalyticsPanel>
 
-          <AnalyticsPanel title="Top Regions" subtitle={`Highest ${selectedYAxisLabel.toLowerCase()} states from active rows`} className="min-h-[24rem]">
+          <AnalyticsPanel title="Top Regions" subtitle={`Highest ${selectedYAxisLabel.toLowerCase()} states from active rows`} className="min-h-[24rem]" downloadRef={topRegionsPanelRef} downloadFilename="highest-revenue-states" panelRef={topRegionsPanelRef}>
             <div className="grid grid-cols-1 gap-3">
               {(topRegionRows.length > 0 ? topRegionRows : [{ name: 'Awaiting data', value: 0 }]).map((entry, index) => (
                 <div key={entry.name} className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 dark:border-slate-800 dark:bg-slate-800/60">
@@ -3498,56 +3597,60 @@ function AdvancedAnalyticsBoard() {
         </div>
 
         <div>
-        <AnalyticsPanel title="Sales By Category" subtitle={`${selectedYAxisLabel} share by Category`} className="min-h-[28rem]">
-          <div className="h-60">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={90} paddingAngle={3}>
-                  {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
-                </Pie>
-                <Tooltip
-                  formatter={(value) => [formatMetricValue(selectedYAxis, value), selectedYAxisLabel]}
-                  labelFormatter={(label) => `Category: ${label}`}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-4 space-y-2">
-            {(categoryOverviewRows.length > 0 ? categoryOverviewRows : pieData.map((entry) => ({ ...entry, share: selectedMetricTotal > 0 ? (entry.value / selectedMetricTotal) * 100 : 0 })))
-              .slice(0, 4)
-              .map((entry) => (
-                <div key={entry.name} className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200">
-                  <div className="flex items-center gap-3">
-                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                    <span className="font-bold text-slate-900 dark:text-white">{entry.name}</span>
+          <AnalyticsPanel title="Sales By Category" subtitle={`${selectedYAxisLabel} share by Category`} className="min-h-[28rem]" downloadRef={pieChartRef1} downloadFilename="category-pie-chart">
+            <div className="relative h-60">
+              <div ref={pieChartRef1} className="w-full h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={90} paddingAngle={3}>
+                      {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value) => [formatMetricValue(selectedYAxis, value), selectedYAxisLabel]}
+                      labelFormatter={(label) => `Category: ${label}`}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              {(categoryOverviewRows.length > 0 ? categoryOverviewRows : pieData.map((entry) => ({ ...entry, share: selectedMetricTotal > 0 ? (entry.value / selectedMetricTotal) * 100 : 0 })))
+                .slice(0, 4)
+                .map((entry) => (
+                  <div key={entry.name} className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200">
+                    <div className="flex items-center gap-3">
+                      <span className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
+                      <span className="font-bold text-slate-900 dark:text-white">{entry.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-black text-slate-900 dark:text-white">{formatMetricValue(selectedYAxis, entry.value)}</div>
+                      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{Number(entry.share || 0).toFixed(1)}% share</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-black text-slate-900 dark:text-white">{formatMetricValue(selectedYAxis, entry.value)}</div>
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{Number(entry.share || 0).toFixed(1)}% share</div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </AnalyticsPanel>
+                ))}
+            </div>
+          </AnalyticsPanel>
         </div>
 
         <div className="space-y-8">
-          <AnalyticsPanel title="Histogram" subtitle={`${selectedYAxisLabel} distribution buckets`} className="min-h-[18rem]">
-            <div className="h-44">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={histogramRanges}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#f97316" radius={[10, 10, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+          <AnalyticsPanel title="Histogram" subtitle={`${selectedYAxisLabel} distribution buckets`} className="min-h-[18rem]" downloadRef={histogramChartRef} downloadFilename="histogram-chart">
+            <div className="relative h-44">
+              <div ref={histogramChartRef} className="w-full h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={histogramRanges}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} allowDecimals={false} />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#f97316" radius={[10, 10, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </AnalyticsPanel>
 
-          <AnalyticsPanel title="Overview" subtitle="Beneath summary strip" className="min-h-[34rem]">
+          <AnalyticsPanel title="Overview" subtitle="Beneath summary strip" className="min-h-[34rem]" downloadRef={overviewPanelRef} downloadFilename="beneath-summary-strip" panelRef={overviewPanelRef}>
             <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-slate-800">
               <div className="grid grid-cols-[1.4fr_1fr_1fr_0.8fr] gap-x-6 bg-slate-50 px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:bg-slate-800/70 dark:text-slate-300">
                 <span className="block pl-2">Month</span>
@@ -3575,60 +3678,62 @@ function AdvancedAnalyticsBoard() {
         </div>
       </div>
 
-      <AnalyticsPanel title="Real-Time Visualization" subtitle={`${projectionMetricLabels.join(' + ')} actual vs next ${projectionWindow}-month projection`}>
-        <div className="h-56">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={projectionTrendRows}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-              <Tooltip
-                formatter={(value, seriesName, item) => {
-                  if (value == null) {
-                    return ['-', seriesName];
-                  }
-                  const metricKey = String(item?.dataKey || '').split('_')[0];
-                  return [formatMetricValue(metricKey, value), seriesName];
-                }}
-              />
-              <Legend />
-              {projectionMetricKeys.map((metricKey) => {
-                const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
-                const strokeColor = '#2563eb';
-                return (
-                  <Line
-                    key={`${metricKey}-actual`}
-                    type="monotone"
-                    dataKey={`${metricKey}_actual`}
-                    name={`${metricLabel} (Actual)`}
-                    stroke={strokeColor}
-                    strokeWidth={3}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 6 }}
-                    connectNulls
-                  />
-                );
-              })}
-              {projectionMetricKeys.map((metricKey) => {
-                const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
-                const strokeColor = '#9333ea';
-                return (
-                  <Line
-                    key={`${metricKey}-projected`}
-                    type="monotone"
-                    dataKey={`${metricKey}_projected`}
-                    name={`${metricLabel} (Projected)`}
-                    stroke={strokeColor}
-                    strokeWidth={3}
-                    strokeDasharray="6 4"
-                    dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill={strokeColor} />)}
-                    activeDot={{ r: 6 }}
-                    connectNulls
-                  />
-                );
-              })}
-            </LineChart>
-          </ResponsiveContainer>
+      <AnalyticsPanel title="Real-Time Visualization" subtitle={`${projectionMetricLabels.join(' + ')} actual vs next ${projectionWindow}-month projection`} downloadRef={projectionChartRef} downloadFilename="projection-chart">
+        <div className="relative h-56">
+          <div ref={projectionChartRef} className="w-full h-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={projectionTrendRows}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                <Tooltip
+                  formatter={(value, seriesName, item) => {
+                    if (value == null) {
+                      return ['-', seriesName];
+                    }
+                    const metricKey = String(item?.dataKey || '').split('_')[0];
+                    return [formatMetricValue(metricKey, value), seriesName];
+                  }}
+                />
+                <Legend />
+                {projectionMetricKeys.map((metricKey) => {
+                  const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
+                  const strokeColor = '#2563eb';
+                  return (
+                    <Line
+                      key={`${metricKey}-actual`}
+                      type="monotone"
+                      dataKey={`${metricKey}_actual`}
+                      name={`${metricLabel} (Actual)`}
+                      stroke={strokeColor}
+                      strokeWidth={3}
+                      dot={{ r: 4 }}
+                      activeDot={{ r: 6 }}
+                      connectNulls
+                    />
+                  );
+                })}
+                {projectionMetricKeys.map((metricKey) => {
+                  const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
+                  const strokeColor = '#9333ea';
+                  return (
+                    <Line
+                      key={`${metricKey}-projected`}
+                      type="monotone"
+                      dataKey={`${metricKey}_projected`}
+                      name={`${metricLabel} (Projected)`}
+                      stroke={strokeColor}
+                      strokeWidth={3}
+                      strokeDasharray="6 4"
+                      dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill={strokeColor} />)}
+                      activeDot={{ r: 6 }}
+                      connectNulls
+                    />
+                  );
+                })}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
         <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
           {realtimeFeed.map((entry, index) => (
@@ -3668,42 +3773,42 @@ function AdvancedAnalyticsBoard() {
         </div>
         <div className="mb-6 rounded-[1.75rem] border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/60">
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-6 xl:items-end">
-          <EditorField label="X Axis">
-            <select value={selectedXAxis} onChange={(event) => setSelectedXAxis(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-              {ANALYTICS_X_AXIS_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-            </select>
-          </EditorField>
-          <EditorField label="Y Axis (Multi Select)">
-            <MultiSelectDropdown
-              options={ANALYTICS_Y_AXIS_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
-              selectedValues={selectedYAxes}
-              onChange={(values) => setSelectedYAxes(values.length > 0 ? values : ['revenue'])}
-              placeholder="Select one or more metrics"
-              compactLabel
-            />
-          </EditorField>
-          <EditorField label="Filter Category">
-            <select value={selectedCategoryFilter} onChange={(event) => setSelectedCategoryFilter(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-              <option value="all">All Categories</option>
-              {availableCategoryOptions.map((category) => <option key={category} value={category}>{category}</option>)}
-            </select>
-          </EditorField>
-          <EditorField label="Filter Year">
-            <select value={selectedYearFilter} onChange={(event) => setSelectedYearFilter(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-              <option value="all">All Years</option>
-              {availableYearOptions.map((year) => <option key={year} value={year}>{year}</option>)}
-            </select>
-          </EditorField>
-          <EditorField label="Month Range">
-            <select value={selectedTimeWindow} onChange={(event) => setSelectedTimeWindow(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-              {ANALYTICS_TIME_WINDOW_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-            </select>
-          </EditorField>
-          <EditorField label="Projection Horizon">
-            <select value={projectionWindow} onChange={(event) => setProjectionWindow(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-              {ANALYTICS_PROJECTION_WINDOW_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-            </select>
-          </EditorField>
+            <EditorField label="X Axis">
+              <select value={selectedXAxis} onChange={(event) => setSelectedXAxis(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                {ANALYTICS_X_AXIS_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </EditorField>
+            <EditorField label="Y Axis (Multi Select)">
+              <MultiSelectDropdown
+                options={ANALYTICS_Y_AXIS_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
+                selectedValues={selectedYAxes}
+                onChange={(values) => setSelectedYAxes(values.length > 0 ? values : ['revenue'])}
+                placeholder="Select one or more metrics"
+                compactLabel
+              />
+            </EditorField>
+            <EditorField label="Filter Category">
+              <select value={selectedCategoryFilter} onChange={(event) => setSelectedCategoryFilter(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <option value="all">All Categories</option>
+                {availableCategoryOptions.map((category) => <option key={category} value={category}>{category}</option>)}
+              </select>
+            </EditorField>
+            <EditorField label="Filter Year">
+              <select value={selectedYearFilter} onChange={(event) => setSelectedYearFilter(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <option value="all">All Years</option>
+                {availableYearOptions.map((year) => <option key={year} value={year}>{year}</option>)}
+              </select>
+            </EditorField>
+            <EditorField label="Month Range">
+              <select value={selectedTimeWindow} onChange={(event) => setSelectedTimeWindow(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                {ANALYTICS_TIME_WINDOW_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </EditorField>
+            <EditorField label="Projection Horizon">
+              <select value={projectionWindow} onChange={(event) => setProjectionWindow(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                {ANALYTICS_PROJECTION_WINDOW_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </EditorField>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1fr_1fr_auto] xl:items-end">
             <MultiSelectDropdown
@@ -3807,6 +3912,12 @@ function AdvancedAnalyticsBoard() {
 }
 
 function AdvancedAnalyticsBase() {
+  const barChartRef1 = useRef(null);
+  const lineChartRef1 = useRef(null);
+  const pieChartRef1 = useRef(null);
+  const barChartRef2 = useRef(null);
+  const lineChartRef2 = useRef(null);
+  const beneathFeedPanelRef = useRef(null);
   const { projectId } = useParams();
   const location = useLocation();
   const token = localStorage.getItem('token');
@@ -3954,63 +4065,71 @@ function AdvancedAnalyticsBase() {
       <div className="grid grid-cols-1 gap-8 2xl:grid-cols-[1.5fr_1fr]">
         <div className="space-y-8">
           <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-            <AnalyticsPanel title="Bar Chart" subtitle={`${selectedYAxisLabel} by Product`}>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={barChartData}>
-                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                    <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
-                    <Bar dataKey="metric" radius={[10, 10, 0, 0]}>
-                      {barChartData.map((entry) => <Cell key={entry.name} fill={entry.fill} />)}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+            <AnalyticsPanel title="Bar Chart" subtitle={`${selectedYAxisLabel} by Product`} downloadRef={barChartRef1} downloadFilename="bar-chart">
+              <div className="relative h-72">
+                <div ref={barChartRef1} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={barChartData}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                      <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
+                      <Bar dataKey="metric" radius={[10, 10, 0, 0]}>
+                        {barChartData.map((entry) => <Cell key={entry.name} fill={entry.fill} />)}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </AnalyticsPanel>
 
-            <AnalyticsPanel title="Line Graph" subtitle={`${selectedYAxisLabel} trend by ${selectedXAxisLabel}`}>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lineData}>
-                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                    <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
-                    <Line type="monotone" dataKey="metric" stroke="#38bdf8" strokeWidth={3} dot={{ r: 4 }} />
-                  </LineChart>
-                </ResponsiveContainer>
+            <AnalyticsPanel title="Line Graph" subtitle={`${selectedYAxisLabel} trend by ${selectedXAxisLabel}`} downloadRef={lineChartRef1} downloadFilename="line-graph-chart">
+              <div className="relative h-72">
+                <div ref={lineChartRef1} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={lineData}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                      <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
+                      <Line type="monotone" dataKey="metric" stroke="#38bdf8" strokeWidth={3} dot={{ r: 4 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </AnalyticsPanel>
           </div>
 
           <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-            <AnalyticsPanel title="Pie Chart" subtitle={`${selectedYAxisLabel} share by ${selectedXAxisLabel}`}>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={68} outerRadius={108} paddingAngle={4}>
-                      {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
-                    </Pie>
-                    <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
+            <AnalyticsPanel title="Pie Chart" subtitle={`${selectedYAxisLabel} share by ${selectedXAxisLabel}`} downloadRef={pieChartRef1} downloadFilename="analytics-pie-chart">
+              <div className="relative h-72">
+                <div ref={pieChartRef1} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={68} outerRadius={108} paddingAngle={4}>
+                        {pieData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                      </Pie>
+                      <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </AnalyticsPanel>
 
-            <AnalyticsPanel title="Histogram" subtitle={`${selectedYAxisLabel} distribution buckets`}>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={histogramRanges}>
-                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#14b8a6" radius={[10, 10, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+            <AnalyticsPanel title="Histogram" subtitle={`${selectedYAxisLabel} distribution buckets`} downloadRef={barChartRef2} downloadFilename="histogram-distribution-chart">
+              <div className="relative h-72">
+                <div ref={barChartRef2} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={histogramRanges}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} allowDecimals={false} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="#14b8a6" radius={[10, 10, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </AnalyticsPanel>
           </div>
@@ -4083,17 +4202,19 @@ function AdvancedAnalyticsBase() {
         </div>
 
         <div className="space-y-8">
-          <AnalyticsPanel title="Real-Time Visualization" subtitle={`${selectedYAxisLabel} projected by ${selectedXAxisLabel}`}>
-            <div className="h-60">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lineData}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
-                  <Line type="monotone" dataKey="metric" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                </LineChart>
-              </ResponsiveContainer>
+          <AnalyticsPanel title="Real-Time Visualization" subtitle={`${selectedYAxisLabel} projected by ${selectedXAxisLabel}`} downloadRef={lineChartRef2} downloadFilename="real-time-visualization-chart">
+            <div className="relative h-60">
+              <div ref={lineChartRef2} className="w-full h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={lineData}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                    <Tooltip formatter={(value) => formatMetricValue(selectedYAxis, value)} />
+                    <Line type="monotone" dataKey="metric" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
             <div className="mt-5 space-y-3">
               {realtimeFeed.map((entry, index) => (
@@ -4116,7 +4237,7 @@ function AdvancedAnalyticsBase() {
             </div>
           </AnalyticsPanel>
 
-          <AnalyticsPanel title="Beneath Feed" subtitle="Operational summary strip">
+          <AnalyticsPanel title="Beneath Feed" subtitle="Operational summary strip" downloadRef={beneathFeedPanelRef} downloadFilename="beneath-feed-summary" panelRef={beneathFeedPanelRef}>
             <div className="grid grid-cols-1 gap-4">
               <RealtimeMetric title="Total Revenue" value={formatInrCompact(totalRevenue)} detail="all active rows" tone="sky" />
               <RealtimeMetric title="Total Rows" value={sortedEntries.length} detail="retrieved from backend" tone="rose" />
@@ -4130,10 +4251,11 @@ function AdvancedAnalyticsBase() {
   );
 }
 
-function AnalyticsPanel({ title, subtitle, children, className = '' }) {
+function AnalyticsPanel({ title, subtitle, children, className = '', downloadRef, downloadFilename, panelRef }) {
   return (
-    <div className={`rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900 ${className}`}>
-      <div className="mb-6">
+    <div ref={panelRef} className={`relative rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900 ${className}`}>
+      {downloadRef && <DownloadButton chartRef={downloadRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
+      <div className="mb-6 pr-16">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{title}</div>
         <h3 className="mt-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">{subtitle}</h3>
       </div>

@@ -4,6 +4,7 @@ import json
 import os
 import mysql.connector
 from dotenv import load_dotenv
+from difflib import SequenceMatcher
 
 load_dotenv()
 
@@ -60,6 +61,54 @@ def normalize_category(value):
     lookup_key = normalized_text.lower()
     return canonical_categories.get(lookup_key, normalized_text.title())
 
+def get_semantic_column_mapping(columns):
+    """
+    Dynamically map user columns to standard columns based on semantic similarity.
+    Uses keyword matching first, then fuzzy string matching as fallback.
+    """
+    # Define semantic keywords for each standard column
+    semantic_groups = {
+        "Product": ["item", "name", "product", "goods", "article"],
+        "Revenue": ["revenue", "price", "sales", "earnings", "income", "total money", "money obtained", "received", "profit"],
+        "Cost": ["cost", "expense", "expenses", "outlay", "spending", "spent"],
+        "Quantity": ["quantity", "qty", "count", "amount", "volume", "units", "no of"],
+        "Region": ["region", "area", "location", "state", "city", "place"],
+        "Store": ["store", "shop", "entity", "outlet", "branch", "warehouse"],
+        "Category": ["category", "type", "kind", "classification"]
+    }
+    
+    mapping = {}
+    
+    for col in columns:
+        col_normalized = col.lower()
+        best_match = None
+        best_score = 0.0
+        
+        # First, try exact keyword matches (highest priority)
+        for standard_col, keywords in semantic_groups.items():
+            for keyword in keywords:
+                if keyword in col_normalized:
+                    # Score based on keyword length and position
+                    score = len(keyword) / len(col_normalized) + 0.5  # Boost for keyword match
+                    if score > best_score:
+                        best_score = score
+                        best_match = standard_col
+        
+        # If no keyword match, use fuzzy string matching
+        if best_match is None or best_score < 0.6:
+            for standard_col, keywords in semantic_groups.items():
+                for keyword in keywords:
+                    score = SequenceMatcher(None, col_normalized, keyword).ratio()
+                    if score > best_score:
+                        best_score = score
+                        best_match = standard_col
+        
+        # Only map if we have a confident match (>0.6 similarity)
+        if best_match and best_score > 0.6:
+            mapping[col] = best_match
+    
+    return mapping
+
 def process_excel(file_path, project_id, month, year, user_id, cursor, connection):
     print(f"Processing file: {file_path} for project: {project_id}, month: {month}, year: {year}, user: {user_id}", file=sys.stderr)
     try:
@@ -73,18 +122,11 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
         # Normalize column names: remove (₹), (Rs), etc.
         df.columns = [c.split("(")[0].strip().title() for c in df.columns]
         
-        mapping = {
-            "Item": "Product", "Name": "Product",
-            "Price": "Revenue", "Sales": "Revenue", "Earnings": "Revenue",
-            "Expense": "Cost", "Expenses": "Cost", "Outlay": "Cost",
-            "Qty": "Quantity", "Count": "Quantity",
-            "Area": "Region", "Location": "Region", "State": "Region",
-            "Shop": "Store", "Entity": "Store",
-            "Type": "Category", "Kind": "Category"
-        }
+        # Dynamically map columns based on semantic similarity
+        mapping = get_semantic_column_mapping(df.columns)
         df = df.rename(columns=mapping)
         print(f"Cleaned and mapped columns: {list(df.columns)}", file=sys.stderr)
-
+        print(f"Column mapping applied: {mapping}", file=sys.stderr)
         # Automatic Store Identification
         detected_store = None
         if 'Store' in df.columns:
