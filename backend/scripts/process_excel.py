@@ -61,12 +61,8 @@ def normalize_category(value):
     lookup_key = normalized_text.lower()
     return canonical_categories.get(lookup_key, normalized_text.title())
 
+
 def get_semantic_column_mapping(columns):
-    """
-    Dynamically map user columns to standard columns based on semantic similarity.
-    Uses keyword matching first, then fuzzy string matching as fallback.
-    """
-    # Define semantic keywords for each standard column
     semantic_groups = {
         "Product": ["item", "name", "product", "goods", "article"],
         "Revenue": ["revenue", "price", "sales", "earnings", "income", "total money", "money obtained", "received", "profit"],
@@ -76,25 +72,22 @@ def get_semantic_column_mapping(columns):
         "Store": ["store", "shop", "entity", "outlet", "branch", "warehouse"],
         "Category": ["category", "type", "kind", "classification"]
     }
-    
+
     mapping = {}
-    
+
     for col in columns:
         col_normalized = col.lower()
         best_match = None
         best_score = 0.0
-        
-        # First, try exact keyword matches (highest priority)
+
         for standard_col, keywords in semantic_groups.items():
             for keyword in keywords:
                 if keyword in col_normalized:
-                    # Score based on keyword length and position
-                    score = len(keyword) / len(col_normalized) + 0.5  # Boost for keyword match
+                    score = len(keyword) / len(col_normalized) + 0.5
                     if score > best_score:
                         best_score = score
                         best_match = standard_col
-        
-        # If no keyword match, use fuzzy string matching
+
         if best_match is None or best_score < 0.6:
             for standard_col, keywords in semantic_groups.items():
                 for keyword in keywords:
@@ -102,32 +95,56 @@ def get_semantic_column_mapping(columns):
                     if score > best_score:
                         best_score = score
                         best_match = standard_col
-        
-        # Only map if we have a confident match (>0.6 similarity)
+
         if best_match and best_score > 0.6:
             mapping[col] = best_match
-    
+
     return mapping
 
-def process_excel(file_path, project_id, month, year, user_id, cursor, connection):
+
+def load_dataframe(file_path):
+    extension = os.path.splitext(file_path)[1].lower()
+    if extension == '.csv':
+        df = pd.read_csv(file_path)
+    else:
+        df = pd.read_excel(file_path)
+
+    df.columns = [str(column).split("(")[0].strip().title() for column in df.columns]
+    return df
+
+
+def preview_file(file_path):
+    try:
+        df = load_dataframe(file_path)
+        sample_df = df.head(5).fillna('')
+        return json.dumps({
+            "columns": list(df.columns),
+            "sample_rows": sample_df.astype(str).to_dict(orient='records'),
+            "row_count": int(len(df.index))
+        })
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+def process_excel(file_path, project_id, month, year, user_id, cursor, connection, column_mapping=None):
     print(f"Processing file: {file_path} for project: {project_id}, month: {month}, year: {year}, user: {user_id}", file=sys.stderr)
     try:
-        extension = os.path.splitext(file_path)[1].lower()
-        if extension == '.csv':
-            df = pd.read_csv(file_path)
-        else:
-            df = pd.read_excel(file_path)
+        df = load_dataframe(file_path)
         print(f"Load successful. Columns found: {list(df.columns)}", file=sys.stderr)
 
-        # Normalize column names: remove (₹), (Rs), etc.
-        df.columns = [c.split("(")[0].strip().title() for c in df.columns]
-        
-        # Dynamically map columns based on semantic similarity
-        mapping = get_semantic_column_mapping(df.columns)
+        if isinstance(column_mapping, dict) and len(column_mapping) > 0:
+            mapping = {
+                str(selected_column): str(standard_column)
+                for standard_column, selected_column in column_mapping.items()
+                if selected_column and str(selected_column).strip() and str(selected_column) != '__skip__'
+            }
+        else:
+            mapping = get_semantic_column_mapping(df.columns)
+
         df = df.rename(columns=mapping)
         print(f"Cleaned and mapped columns: {list(df.columns)}", file=sys.stderr)
         print(f"Column mapping applied: {mapping}", file=sys.stderr)
-        # Automatic Store Identification
+
         detected_store = None
         if 'Store' in df.columns:
             detected_store = str(df['Store'].iloc[0])
@@ -146,7 +163,6 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
                 project_id = cursor.lastrowid
         else:
             if user_id is not None:
-                # Use the requested project only if it belongs to the current user.
                 cursor.execute("SELECT id FROM projects WHERE id = %s AND user_id = %s", (project_id, user_id))
                 row = cursor.fetchone()
                 if row:
@@ -170,21 +186,22 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
         if missing:
             return json.dumps({"error": f"Missing columns: {', '.join(missing)}", "columns_found": list(df.columns)})
 
-        # If Category column doesn't exist, create one with default value
         if 'Category' not in df.columns:
             df['Category'] = 'General'
 
+        df['Revenue'] = pd.to_numeric(df['Revenue'], errors='coerce').fillna(0)
+        df['Cost'] = pd.to_numeric(df['Cost'], errors='coerce').fillna(0)
+        df['Quantity'] = pd.to_numeric(df['Quantity'], errors='coerce').fillna(0)
         df['Region'] = df['Region'].apply(normalize_indian_state)
         df['Category'] = df['Category'].apply(normalize_category)
+        df['Product'] = df['Product'].fillna('').astype(str).str.strip()
 
-        # Calculations
         df['Net Revenue'] = df['Revenue'] - df['Cost']
         total_revenue = float(df['Revenue'].sum())
         total_cost = float(df['Cost'].sum())
         total_net_revenue = float(df['Net Revenue'].sum())
         total_quantity = int(df['Quantity'].sum())
 
-        # Performance breakdowns
         category_data = {str(k): float(v) for k, v in df.groupby('Category')['Revenue'].sum().to_dict().items()}
         region_data = {str(k): float(v) for k, v in df.groupby('Region')['Revenue'].sum().to_dict().items()}
         top_products = {str(k): float(v) for k, v in df.groupby('Product')['Revenue'].sum().sort_values(ascending=False).to_dict().items()}
@@ -202,14 +219,13 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
                 "cost": float(detail_row.get('Cost', 0) or 0),
                 "quantity": int(detail_row.get('Quantity', 0) or 0)
             })
-        
+
         top_product = list(top_products.keys())[0] if top_products else "N/A"
         top_region = list(region_data.keys())[0] if region_data else "N/A"
 
         profit_margin = (total_net_revenue / total_revenue * 100) if total_revenue > 0 else 0
         insight = f"Performance in {top_region} is leading! {top_product} is your primary growth driver with a {profit_margin:.1f}% net margin."
 
-        # Save to DB
         sql = """
         INSERT INTO sales_summaries (project_id, month_name, year, total_revenue, total_cost, net_revenue, total_quantity, top_product, top_region, insight, region_data, category_data, top_products, detailed_entries)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -219,7 +235,7 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
         insight = VALUES(insight), region_data = VALUES(region_data), category_data = VALUES(category_data), top_products = VALUES(top_products), detailed_entries = VALUES(detailed_entries)
         """
         cursor.execute(sql, (
-            project_id, month, year, total_revenue, total_cost, total_net_revenue, total_quantity, 
+            project_id, month, year, total_revenue, total_cost, total_net_revenue, total_quantity,
             top_product, top_region, insight, json.dumps(region_data), json.dumps(category_data), json.dumps(top_products), json.dumps(detailed_entries)
         ))
         connection.commit()
@@ -229,15 +245,36 @@ def process_excel(file_path, project_id, month, year, user_id, cursor, connectio
     except Exception as e:
         return json.dumps({"error": str(e)})
 
+
 def main():
-    if len(sys.argv) < 5:
-        print(json.dumps({"error": "Missing arguments (filePath, projectId, month, year)"}))
+    if len(sys.argv) < 3:
+        print(json.dumps({"error": "Missing arguments"}))
         return
 
-    file_path, project_id, month, year = sys.argv[1:5]
-    user_id = sys.argv[5] if len(sys.argv) > 5 else None
+    command = sys.argv[1]
+
+    if command == 'preview':
+        print(preview_file(sys.argv[2]))
+        return
+
+    if command == 'process':
+        if len(sys.argv) < 7:
+            print(json.dumps({"error": "Missing arguments (filePath, projectId, month, year, userId, columnMapping)"}))
+            return
+
+        file_path, project_id, month, year, user_id = sys.argv[2:7]
+        raw_mapping = sys.argv[7] if len(sys.argv) > 7 else '{}'
+    else:
+        if len(sys.argv) < 5:
+            print(json.dumps({"error": "Missing arguments (filePath, projectId, month, year)"}))
+            return
+
+        file_path, project_id, month, year = sys.argv[1:5]
+        user_id = sys.argv[5] if len(sys.argv) > 5 else None
+        raw_mapping = '{}'
 
     try:
+        column_mapping = json.loads(raw_mapping or '{}')
         connection = mysql.connector.connect(
             host=os.getenv('DB_HOST', 'localhost'),
             user=os.getenv('DB_USER', 'user'),
@@ -245,14 +282,17 @@ def main():
             database=os.getenv('DB_NAME', 'datavis_db')
         )
         cursor = connection.cursor()
-        result = process_excel(file_path, project_id, month, year, user_id, cursor, connection)
+        result = process_excel(file_path, project_id, month, year, user_id, cursor, connection, column_mapping)
         print(result)
         connection.commit()
     except Exception as e:
         print(json.dumps({"error": str(e)}))
     finally:
-        if 'cursor' in locals() and cursor: cursor.close()
-        if 'connection' in locals() and connection: connection.close()
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'connection' in locals() and connection:
+            connection.close()
+
 
 if __name__ == "__main__":
     main()

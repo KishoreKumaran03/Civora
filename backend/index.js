@@ -4,6 +4,8 @@ const multer = require('multer');
 const mysql = require('mysql2/promise');
 const { execFile } = require('child_process');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -67,12 +69,97 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 const JWT_SECRET = process.env.JWT_SECRET || 'secret-key-123-analytics';
+const uploadPreviewStore = new Map();
 
 const app = express();
 const port = 8000;
 
 app.use(cors());
 app.use(express.json());
+
+function cleanupUploadPreviews() {
+  const expiryMs = 1000 * 60 * 60;
+  const now = Date.now();
+
+  for (const [previewId, preview] of uploadPreviewStore.entries()) {
+    if ((now - preview.createdAt) < expiryMs) {
+      continue;
+    }
+
+    try {
+      fs.unlinkSync(preview.filePath);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        console.error(`Failed to remove expired upload preview file ${preview.filePath}:`, error.message);
+      }
+    }
+
+    uploadPreviewStore.delete(previewId);
+  }
+}
+
+function buildPythonArgs(mode, filePath, options = {}) {
+  const pythonArgs = [path.join(__dirname, 'scripts', 'process_excel.py'), mode, filePath];
+
+  if (mode === 'process') {
+    pythonArgs.push(
+      String(options.projectId ?? ''),
+      String(options.month ?? ''),
+      String(options.year ?? ''),
+      String(options.userId ?? ''),
+      JSON.stringify(options.columnMapping || {})
+    );
+  }
+
+  return pythonArgs;
+}
+
+function runPythonUploadTask(mode, filePath, options = {}) {
+  const pythonCommand = process.env.PYTHON_BIN || (process.platform === 'win32' ? 'python' : 'python3');
+  const pythonArgs = buildPythonArgs(mode, filePath, options);
+
+  return new Promise((resolve, reject) => {
+    execFile(pythonCommand, pythonArgs, (error, stdout, stderr) => {
+      console.log(`Python Command: ${pythonCommand} ${pythonArgs.join(' ')}`);
+
+      if (stderr) {
+        console.error(`Python Stderr: ${stderr}`);
+      }
+
+      if (error) {
+        console.error(`Exec Error: ${error.message}`);
+        reject(new Error(error.message));
+        return;
+      }
+
+      console.log(`Python Stdout: ${stdout}`);
+
+      try {
+        resolve(JSON.parse(stdout));
+      } catch (parseError) {
+        console.error(`JSON Parse Error: ${parseError.message}. Raw output: ${stdout}`);
+        reject(new Error('Invalid output from processing script'));
+      }
+    });
+  });
+}
+
+function removeUploadPreview(previewId) {
+  const preview = uploadPreviewStore.get(previewId);
+  if (!preview) {
+    return;
+  }
+
+  try {
+    fs.unlinkSync(preview.filePath);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      console.error(`Failed to delete upload preview file ${preview.filePath}:`, error.message);
+    }
+  }
+
+  uploadPreviewStore.delete(previewId);
+}
 
 async function ensureSchema() {
   const connection = await pool.getConnection();
@@ -232,33 +319,199 @@ app.post('/api/upload', upload.single('file'), authenticateToken, async (req, re
   const filePath = req.file.path;
   const targetYear = year || 2024;
 
-  // Trigger Python script
-  const pythonScript = path.join(__dirname, 'scripts', 'process_excel.py');
-  const pythonCommand = process.env.PYTHON_BIN || (process.platform === 'win32' ? 'python' : 'python3');
-  const pythonArgs = [pythonScript, filePath, project_id, month, targetYear, String(userId)];
+  try {
+    const result = await runPythonUploadTask('process', filePath, {
+      projectId: project_id,
+      month,
+      year: targetYear,
+      userId,
+      columnMapping: {},
+    });
 
-  execFile(pythonCommand, pythonArgs, async (error, stdout, stderr) => {
-    console.log(`Python Command: ${pythonCommand} ${pythonArgs.join(' ')}`);
-    if (error) {
-      console.error(`Exec Error: ${error.message}`);
-      return res.status(500).json({ error: 'Data processing failed', details: error.message });
-    }
-    if (stderr) {
-      console.error(`Python Stderr: ${stderr}`);
+    if (result.error) {
+      return res.status(400).json({ error: result.error, columns: result.columns_found });
     }
 
-    console.log(`Python Stdout: ${stdout}`);
+    res.json({ message: 'Data processed successfully', data: result });
+  } catch (error) {
+    res.status(500).json({ error: 'Data processing failed', details: error.message });
+  } finally {
     try {
-      const result = JSON.parse(stdout);
+      fs.unlinkSync(filePath);
+    } catch (unlinkError) {
+      if (unlinkError.code !== 'ENOENT') {
+        console.error(`Failed to remove uploaded file ${filePath}:`, unlinkError.message);
+      }
+    }
+  }
+});
+
+app.post('/api/upload/preview', upload.array('files'), authenticateToken, async (req, res) => {
+  cleanupUploadPreviews();
+
+  const files = Array.isArray(req.files) ? req.files : [];
+  if (files.length === 0) {
+    return res.status(400).json({ error: 'No files uploaded' });
+  }
+
+  let batchPeriods = [];
+  try {
+    batchPeriods = req.body.batch_periods ? JSON.parse(req.body.batch_periods) : [];
+  } catch {
+    return res.status(400).json({ error: 'Invalid batch period payload' });
+  }
+
+  try {
+    const previewItems = [];
+    const createdPreviewIds = [];
+
+    for (let index = 0; index < files.length; index += 1) {
+      const file = files[index];
+      const previewResult = await runPythonUploadTask('preview', file.path);
+
+      if (previewResult.error) {
+        createdPreviewIds.forEach(removeUploadPreview);
+        try {
+          fs.unlinkSync(file.path);
+        } catch (unlinkError) {
+          if (unlinkError.code !== 'ENOENT') {
+            console.error(`Failed to remove invalid preview file ${file.path}:`, unlinkError.message);
+          }
+        }
+        return res.status(400).json({ error: previewResult.error });
+      }
+
+      const previewId = crypto.randomUUID();
+      const assignedPeriod = batchPeriods[index] || {};
+      const previewItem = {
+        preview_id: previewId,
+        file_name: file.originalname,
+        filePath: file.path,
+        columns: Array.isArray(previewResult.columns) ? previewResult.columns : [],
+        sample_rows: Array.isArray(previewResult.sample_rows) ? previewResult.sample_rows : [],
+        row_count: Number(previewResult.row_count || 0),
+        month: assignedPeriod.month || req.body.month || 'January',
+        year: assignedPeriod.year || req.body.year || '2024',
+        user_id: req.user.userId,
+        createdAt: Date.now(),
+      };
+
+      uploadPreviewStore.set(previewId, previewItem);
+      createdPreviewIds.push(previewId);
+      previewItems.push({
+        preview_id: previewItem.preview_id,
+        file_name: previewItem.file_name,
+        columns: previewItem.columns,
+        sample_rows: previewItem.sample_rows,
+        row_count: previewItem.row_count,
+        month: previewItem.month,
+        year: previewItem.year,
+      });
+    }
+
+    const firstColumns = JSON.stringify(previewItems[0]?.columns || []);
+    const schemaMismatch = previewItems.some((item) => JSON.stringify(item.columns || []) !== firstColumns);
+
+    res.json({
+      mode: files.length > 1 ? 'batch' : 'single',
+      preview_items: previewItems,
+      schema_mismatch: schemaMismatch,
+    });
+  } catch (error) {
+    files.forEach((file) => {
+      try {
+        fs.unlinkSync(file.path);
+      } catch (unlinkError) {
+        if (unlinkError.code !== 'ENOENT') {
+          console.error(`Failed to remove preview file ${file.path}:`, unlinkError.message);
+        }
+      }
+    });
+
+    res.status(500).json({ error: 'Unable to inspect uploaded file', details: error.message });
+  }
+});
+
+app.get('/api/upload/preview/:previewId', authenticateToken, async (req, res) => {
+  cleanupUploadPreviews();
+  const preview = uploadPreviewStore.get(req.params.previewId);
+
+  if (!preview) {
+    return res.status(404).json({ error: 'Upload preview not found or expired' });
+  }
+
+  if (preview.user_id !== req.user.userId) {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+
+  res.json({
+    preview_id: preview.preview_id,
+    file_name: preview.file_name,
+    columns: preview.columns,
+    sample_rows: preview.sample_rows,
+    row_count: preview.row_count,
+    month: preview.month,
+    year: preview.year,
+  });
+});
+
+app.post('/api/upload/complete', authenticateToken, async (req, res) => {
+  cleanupUploadPreviews();
+
+  const { project_id, preview_id, preview_items, column_mapping } = req.body || {};
+  const userId = req.user.userId;
+  const itemsToProcess = Array.isArray(preview_items) && preview_items.length > 0
+    ? preview_items
+    : (preview_id ? [{ preview_id, month: req.body.month, year: req.body.year }] : []);
+
+  if (!project_id) {
+    return res.status(400).json({ error: 'project_id is required' });
+  }
+
+  if (itemsToProcess.length === 0) {
+    return res.status(400).json({ error: 'No preview selected for import' });
+  }
+
+  if (!column_mapping || typeof column_mapping !== 'object') {
+    return res.status(400).json({ error: 'column_mapping is required' });
+  }
+
+  const processedResults = [];
+
+  try {
+    for (const item of itemsToProcess) {
+      const preview = uploadPreviewStore.get(item.preview_id);
+      if (!preview) {
+        return res.status(404).json({ error: `Upload preview ${item.preview_id} not found or expired` });
+      }
+
+      if (preview.user_id !== userId) {
+        return res.status(403).json({ error: 'Unauthorized' });
+      }
+
+      const result = await runPythonUploadTask('process', preview.filePath, {
+        projectId: project_id,
+        month: item.month || preview.month,
+        year: item.year || preview.year,
+        userId,
+        columnMapping: column_mapping,
+      });
+
       if (result.error) {
         return res.status(400).json({ error: result.error, columns: result.columns_found });
       }
-      res.json({ message: 'Data processed successfully', data: result });
-    } catch (e) {
-      console.error(`JSON Parse Error: ${e.message}. Raw output: ${stdout}`);
-      res.status(500).json({ error: 'Invalid output from processing script', raw: stdout });
+
+      processedResults.push(result);
+      removeUploadPreview(item.preview_id);
     }
-  });
+
+    res.json({
+      message: itemsToProcess.length > 1 ? 'Batch import completed successfully' : 'Data processed successfully',
+      data: processedResults,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Data processing failed', details: error.message });
+  }
 });
 
 // Get all projects for logged-in user

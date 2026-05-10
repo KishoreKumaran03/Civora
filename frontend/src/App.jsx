@@ -82,6 +82,14 @@ const ANALYTICS_PROJECTION_WINDOW_OPTIONS = [
   { value: '6', label: '6 Months' },
   { value: '12', label: '12 Months' },
 ];
+const IMPORT_MAPPING_FIELDS = [
+  { key: 'Product', label: 'Product Column', helper: 'Name of the product or item', required: true },
+  { key: 'Category', label: 'Category Column', helper: 'Group, type, or product family', required: false },
+  { key: 'Region', label: 'Region Column', helper: 'State, city, region, or area', required: true },
+  { key: 'Revenue', label: 'Revenue Column', helper: 'Sales, revenue, income, or amount', required: true },
+  { key: 'Cost', label: 'Cost Column', helper: 'Cost, expense, or spend', required: true },
+  { key: 'Quantity', label: 'Quantity Column', helper: 'Units, quantity, or item count', required: true },
+];
 
 function getSequentialBatchPeriod(startMonth, startYear, offset) {
   const initialMonthIndex = Math.max(0, MONTH_ORDER.indexOf(startMonth));
@@ -161,24 +169,38 @@ function normalizeMapStateName(value) {
   return MAP_STATE_NAME_ALIASES[text] || text;
 }
 
-function downloadChart(chartRef, filename = 'chart.png') {
+async function downloadChart(chartRef, filename = 'chart.png') {
   if (!chartRef?.current) return;
 
-  html2canvas(chartRef.current, {
-    backgroundColor: '#ffffff',
-    scale: 2
-  }).then(canvas => {
+  const exportHiddenElements = Array.from(chartRef.current.querySelectorAll('[data-export-hidden="true"]'));
+  const previousDisplayValues = exportHiddenElements.map((element) => element.style.display);
+
+  exportHiddenElements.forEach((element) => {
+    element.style.display = 'none';
+  });
+
+  try {
+    const canvas = await html2canvas(chartRef.current, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+    });
+
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
     link.download = `${filename}-${new Date().getTime()}.png`;
     link.click();
-  });
+  } finally {
+    exportHiddenElements.forEach((element, index) => {
+      element.style.display = previousDisplayValues[index];
+    });
+  }
 }
 
 function DownloadButton({ chartRef, filename, className = '' }) {
   return (
     <button
       onClick={() => downloadChart(chartRef, filename)}
+      data-export-hidden="true"
       className={`absolute right-6 top-6 z-10 flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-lg shadow-slate-900/10 ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-700 dark:bg-slate-900 dark:text-sky-300 dark:ring-slate-700 dark:hover:bg-slate-800 ${className}`}
       title="Download as PNG"
       aria-label="Download as PNG"
@@ -293,6 +315,7 @@ function App() {
                     <Route path="/favorites" element={<FavoritesList />} />
                     <Route path="/reports" element={<ReportsPage />} />
                     <Route path="/settings" element={<SettingsPage user={user} />} />
+                    <Route path="/import/mapping/:previewId" element={<UploadColumnMappingPage />} />
                     <Route path="/advanced-analytics" element={<AdvancedAnalyticsBoard />} />
                     <Route path="/advanced-analytics/:projectId" element={<AdvancedAnalyticsBoard />} />
                     <Route path="/analytics/:projectId" element={<StoreDetailAnalytics />} />
@@ -444,29 +467,48 @@ function Header({ user, setDarkMode, darkMode, logout }) {
 
     try {
       setIsUploading(true);
+      const formData = new FormData();
+      const batchPeriods = importMode === 'batch'
+        ? batchFiles.map((item) => ({ month: item.month, year: item.year }))
+        : [{ month: selectedMonth, year: selectedYear }];
+
       if (importMode === 'single') {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('project_id', selectedImportProjectId);
-        formData.append('month', selectedMonth);
-        formData.append('year', selectedYear);
-        await apiRequest({ method: 'post', url: '/api/upload', data: formData, headers: { 'Authorization': `Bearer ${token}` } });
+        formData.append('files', selectedFile);
       } else {
-        for (const batchItem of batchFiles) {
-          const formData = new FormData();
-          formData.append('file', batchItem.file);
-          formData.append('project_id', selectedImportProjectId);
-          formData.append('month', batchItem.month);
-          formData.append('year', batchItem.year);
-          await apiRequest({ method: 'post', url: '/api/upload', data: formData, headers: { 'Authorization': `Bearer ${token}` } });
-        }
+        batchFiles.forEach((batchItem) => formData.append('files', batchItem.file));
       }
-      resetImportDialog();
+
+      formData.append('month', selectedMonth);
+      formData.append('year', selectedYear);
+      formData.append('batch_periods', JSON.stringify(batchPeriods));
+
+      const response = await apiRequest({
+        method: 'post',
+        url: '/api/upload/preview',
+        data: formData,
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const previewItems = Array.isArray(response.data?.preview_items) ? response.data.preview_items : [];
+      if (previewItems.length === 0) {
+        throw new Error('No preview data returned from the uploaded file.');
+      }
+
       const targetProject = availableProjects.find((p) => String(p.id) === String(selectedImportProjectId));
-      alert(importMode === 'single' ? "Successful! Opening the selected project's analytics." : `Successful! Imported ${batchFiles.length} month file(s). Opening project analytics.`);
-      navigate(`/advanced-analytics/${selectedImportProjectId}`, { state: { projectName: targetProject?.name || `Project ${selectedImportProjectId}` } });
-      window.location.reload();
-    } catch (err) { setIsUploading(false); alert("Upload failed: " + (err.response?.data?.error || err.message)); }
+      resetImportDialog();
+      navigate(`/import/mapping/${previewItems[0].preview_id}`, {
+        state: {
+          importMode,
+          projectId: selectedImportProjectId,
+          projectName: targetProject?.name || `Project ${selectedImportProjectId}`,
+          previewItems,
+          schemaMismatch: Boolean(response.data?.schema_mismatch),
+        }
+      });
+    } catch (err) {
+      setIsUploading(false);
+      alert("Upload failed: " + (err.response?.data?.error || err.message));
+    }
   };
 
   const handleExportPdf = () => {
@@ -827,7 +869,7 @@ function Header({ user, setDarkMode, darkMode, logout }) {
                 disabled={(importMode === 'single' ? !selectedFile : batchFiles.length === 0) || isUploading}
                 className="rounded-2xl bg-primary px-5 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
               >
-                {isUploading ? 'Importing...' : (importMode === 'single' ? 'Import Now' : 'Import All Months')}
+                {isUploading ? 'Preparing...' : (importMode === 'single' ? 'Continue To Mapping' : 'Review Column Mapping')}
               </button>
             </div>
           </div>
@@ -849,6 +891,225 @@ function ExportItem({ icon, label, sub, color, isPremium }) {
         <div className="text-[10px] text-slate-400 font-medium">{sub}</div>
       </div>
     </button>
+  );
+}
+
+function UploadColumnMappingPage() {
+  const { previewId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const statePayload = location.state || {};
+  const [previewItems, setPreviewItems] = useState(() => Array.isArray(statePayload.previewItems) ? statePayload.previewItems : []);
+  const [projectId] = useState(() => statePayload.projectId || '');
+  const [projectName] = useState(() => statePayload.projectName || 'Selected Project');
+  const [importMode] = useState(() => statePayload.importMode || 'single');
+  const [schemaMismatch] = useState(() => Boolean(statePayload.schemaMismatch));
+  const [mapping, setMapping] = useState(() => ({
+    Product: '',
+    Category: '__skip__',
+    Region: '',
+    Revenue: '',
+    Cost: '',
+    Quantity: '',
+  }));
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(previewItems.length === 0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (previewItems.length > 0 || !previewId || !token) return;
+
+    apiRequest({
+      method: 'get',
+      url: `/api/upload/preview/${previewId}`,
+      headers: { 'Authorization': `Bearer ${token}` }
+    }).then((response) => {
+      setPreviewItems([response.data]);
+      setIsLoading(false);
+    }).catch((requestError) => {
+      setError(requestError.response?.data?.error || 'Unable to load the uploaded file preview.');
+      setIsLoading(false);
+    });
+  }, [previewId, previewItems.length, token]);
+
+  const activePreview = previewItems[0];
+  const availableColumns = Array.isArray(activePreview?.columns) ? activePreview.columns : [];
+
+  const handleSubmit = async () => {
+    const missingRequired = IMPORT_MAPPING_FIELDS
+      .filter((field) => field.required)
+      .filter((field) => !mapping[field.key]);
+
+    if (missingRequired.length > 0) {
+      setError(`Select columns for: ${missingRequired.map((field) => field.key).join(', ')}.`);
+      return;
+    }
+
+    const duplicateSelections = Object.entries(mapping)
+      .filter(([, value]) => value && value !== '__skip__')
+      .reduce((accumulator, [fieldKey, value]) => {
+        accumulator[value] = accumulator[value] || [];
+        accumulator[value].push(fieldKey);
+        return accumulator;
+      }, {});
+    const duplicateColumns = Object.entries(duplicateSelections).filter(([, fieldKeys]) => fieldKeys.length > 1);
+
+    if (duplicateColumns.length > 0) {
+      setError(`Each parameter should use a different source column. Duplicate: ${duplicateColumns.map(([column]) => column).join(', ')}.`);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await apiRequest({
+        method: 'post',
+        url: '/api/upload/complete',
+        headers: { 'Authorization': `Bearer ${token}` },
+        data: {
+          project_id: projectId,
+          preview_id: previewItems.length === 1 ? activePreview?.preview_id : undefined,
+          preview_items: previewItems.length > 1
+            ? previewItems.map((item) => ({ preview_id: item.preview_id, month: item.month, year: item.year }))
+            : undefined,
+          column_mapping: mapping,
+        }
+      });
+
+      alert(importMode === 'batch'
+        ? `Imported ${previewItems.length} file(s) with your selected column mapping.`
+        : 'Imported the file with your selected column mapping.');
+      navigate(`/advanced-analytics/${projectId}`, { state: { projectName } });
+      window.location.reload();
+    } catch (requestError) {
+      setError(requestError.response?.data?.error || 'Import failed while processing the selected columns.');
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 px-6 py-10 dark:bg-slate-950">
+        <div className="mx-auto max-w-5xl rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+          <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Loading uploaded file preview...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.14),_transparent_35%),linear-gradient(180deg,_#f8fafc_0%,_#eef6ff_100%)] px-4 py-8 dark:bg-slate-950 md:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="rounded-[2rem] border border-slate-200 bg-white/95 p-6 shadow-2xl backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 md:p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="text-[11px] font-black uppercase tracking-[0.28em] text-sky-600">Column Mapping</div>
+              <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white">Match your file columns before analysis</h1>
+              <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-slate-500 dark:text-slate-300">
+                Choose which uploaded columns should drive each analytics parameter. This replaces the old hard-coded auto-detection step.
+              </p>
+            </div>
+            <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              <div>{projectName}</div>
+              <div className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                {importMode === 'batch' ? `${previewItems.length} files queued` : activePreview?.file_name}
+              </div>
+            </div>
+          </div>
+
+          {schemaMismatch && (
+            <div className="mt-6 rounded-[1.5rem] border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-300">
+              Your batch files do not all share the exact same column list. The mapping below uses the first file, so keep the batch schema consistent before importing.
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-6 rounded-[1.5rem] border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/20 dark:text-rose-300">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900 md:p-8">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400">Detected Columns</div>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">Columns found in the uploaded file</h2>
+              </div>
+              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                {activePreview?.row_count || 0} rows detected
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              {availableColumns.map((columnName) => (
+                <span key={columnName} className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  {columnName}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900 md:p-8">
+            <div className="mb-6">
+              <div className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400">Parameters</div>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">Select the source column for each metric</h2>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {IMPORT_MAPPING_FIELDS.map((field) => (
+                <label key={field.key} className="block rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <div className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">{field.label}</div>
+                      <div className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-300">{field.helper}</div>
+                    </div>
+                    {field.required && <span className="w-fit rounded-full bg-sky-100 px-2 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-sky-700 dark:bg-sky-950/40 dark:text-sky-300">Required</span>}
+                  </div>
+                  <select
+                    value={mapping[field.key] || ''}
+                    onChange={(event) => setMapping((current) => ({ ...current, [field.key]: event.target.value }))}
+                    className="mt-4 h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                  >
+                    <option value="">{field.required ? `Select ${field.key}` : `Optional ${field.key}`}</option>
+                    {!field.required && <option value="__skip__">Not available</option>}
+                    {availableColumns.map((columnName) => (
+                      <option key={`${field.key}-${columnName}`} value={columnName}>{columnName}</option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-[1.5rem] border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+              {importMode === 'batch'
+                ? 'This mapping will be applied to every file in the batch.'
+                : `Reporting period: ${activePreview?.month || '-'} ${activePreview?.year || '-'}`}
+            </div>
+
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting || !activePreview}
+                className="rounded-2xl bg-sky-600 px-5 py-3 font-bold text-white shadow-lg shadow-sky-600/20 transition-all hover:-translate-y-0.5 hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              >
+                {isSubmitting ? 'Importing...' : 'Import With Selected Columns'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -2666,9 +2927,11 @@ function StoreDetailAnalytics() {
 }
 
 function ChartCard({ title, icon, color, children, downloadRef, downloadFilename }) {
+  const cardRef = useRef(null);
+
   return (
-    <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-none relative group">
-      {downloadRef && <DownloadButton chartRef={downloadRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
+    <div ref={cardRef} className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-800 transition-all hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-none relative group">
+      {downloadRef && <DownloadButton chartRef={cardRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
       <div className="flex items-center justify-between mb-10">
         <h3 className="font-black text-[10px] opacity-40 uppercase tracking-[4px] flex items-center gap-3">
           <span className="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform">{icon}</span> {title}
@@ -2782,17 +3045,54 @@ function getAnalyticsMetric(entry, metric) {
   return Number(entry.revenue || 0);
 }
 
-function aggregateEntriesForAxis(entries, xAxis, yAxis) {
-  const groupedEntries = entries.reduce((groups, entry) => {
-    const dimensionValue = getAnalyticsDimension(entry, xAxis);
-    groups[dimensionValue] = (groups[dimensionValue] || 0) + getAnalyticsMetric(entry, yAxis);
-    return groups;
-  }, {});
+function aggregateEntriesForAxis(entries, xAxis, yAxis, options = {}) {
+  const { averageMonthAcrossYears = false } = options;
+  let groupedEntries = {};
+
+  if (xAxis === 'month' && averageMonthAcrossYears) {
+    const groupedByMonthYear = entries.reduce((groups, entry) => {
+      const monthValue = getAnalyticsDimension(entry, 'month');
+      const yearValue = getAnalyticsDimension(entry, 'year');
+      const key = `${monthValue}-${yearValue}`;
+
+      if (!groups[key]) {
+        groups[key] = {
+          month: monthValue,
+          year: yearValue,
+          value: 0,
+        };
+      }
+
+      groups[key].value += getAnalyticsMetric(entry, yAxis);
+      return groups;
+    }, {});
+
+    groupedEntries = Object.values(groupedByMonthYear).reduce((months, row) => {
+      if (!months[row.month]) {
+        months[row.month] = {
+          total: 0,
+          count: 0,
+        };
+      }
+
+      months[row.month].total += row.value;
+      months[row.month].count += 1;
+      return months;
+    }, {});
+  } else {
+    groupedEntries = entries.reduce((groups, entry) => {
+      const dimensionValue = getAnalyticsDimension(entry, xAxis);
+      groups[dimensionValue] = (groups[dimensionValue] || 0) + getAnalyticsMetric(entry, yAxis);
+      return groups;
+    }, {});
+  }
 
   return Object.entries(groupedEntries)
     .map(([name, value], index) => ({
       name,
-      value,
+      value: xAxis === 'month' && averageMonthAcrossYears
+        ? (Number(value.total || 0) / Math.max(1, Number(value.count || 0)))
+        : value,
       fill: COLORS[index % COLORS.length],
     }))
     .sort((leftEntry, rightEntry) => {
@@ -3155,13 +3455,19 @@ function AdvancedAnalyticsBoard() {
         });
 
         const rows = Array.isArray(response.data) ? response.data : [];
+        const rowYears = [...new Set(rows.map((row) => String(row.year || '')).filter(Boolean))]
+          .sort((left, right) => Number(left) - Number(right));
         setProjectRows(rows);
         setEntries(buildEntriesFromProjectData(rows));
+        if (rowYears.length > 0) {
+          setSelectedYearFilter(rowYears[rowYears.length - 1]);
+        }
         setSelectedProjectName(location.state?.projectName || `Project ${projectId}`);
       } catch (error) {
         console.error('Error fetching advanced analytics project data:', error);
         setProjectRows([]);
         setEntries([]);
+        setSelectedYearFilter('all');
         setSelectedProjectName(location.state?.projectName || `Project ${projectId}`);
       } finally {
         setIsProjectLoading(false);
@@ -3230,7 +3536,10 @@ function AdvancedAnalyticsBoard() {
   const activeRegions = new Set(sortedEntries.map((entry) => entry.region).filter(Boolean)).size;
   const selectedYAxisLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === selectedYAxis)?.label || 'Revenue';
   const selectedXAxisLabel = ANALYTICS_X_AXIS_OPTIONS.find((option) => option.value === selectedXAxis)?.label || 'Month';
-  const aggregatedAxisData = aggregateEntriesForAxis(sortedEntries, selectedXAxis, selectedYAxis);
+  const shouldAverageAcrossYears = selectedYearFilter === 'all';
+  const aggregatedAxisData = aggregateEntriesForAxis(sortedEntries, selectedXAxis, selectedYAxis, {
+    averageMonthAcrossYears: shouldAverageAcrossYears,
+  });
   const projectionMetricKeys = selectedYAxes.length > 0 ? selectedYAxes : ['revenue'];
   const projectionMetricLabels = projectionMetricKeys
     .map((metricKey) => ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey);
@@ -3354,13 +3663,53 @@ function AdvancedAnalyticsBoard() {
       return leftEntry.monthIndex - rightEntry.monthIndex;
     });
 
-  const monthlyTrendRows = (projectRows.length > 0 ? projectRows : fallbackMonthlyTrendRows)
-    .map((row, index) => ({
-      name: row.month_name || row.name || `Point ${index + 1}`,
-      revenue: Number(row.total_revenue || row.value || 0),
-      profit: Number(row.net_revenue ?? (Number(row.total_revenue || row.value || 0) - Number(row.total_cost || 0))),
-      metricLabel: 'Revenue',
-    }));
+  const filteredProjectRows = (projectRows.length > 0 ? projectRows : fallbackMonthlyTrendRows)
+    .filter((row) => selectedYearFilter === 'all' || String(row.year) === selectedYearFilter);
+
+  const monthlyTrendRows = (shouldAverageAcrossYears
+    ? Object.values(filteredProjectRows.reduce((accumulator, row) => {
+      const monthName = row.month_name || row.name || 'January';
+      const monthIndex = MONTH_ORDER.indexOf(monthName);
+      const safeMonthIndex = monthIndex >= 0 ? monthIndex : 0;
+
+      if (!accumulator[monthName]) {
+        accumulator[monthName] = {
+          name: String(monthName).slice(0, 3),
+          revenueTotal: 0,
+          profitTotal: 0,
+          count: 0,
+          monthIndex: safeMonthIndex,
+          metricLabel: 'Revenue',
+        };
+      }
+
+      accumulator[monthName].revenueTotal += Number(row.total_revenue || row.value || 0);
+      accumulator[monthName].profitTotal += Number(row.net_revenue ?? (Number(row.total_revenue || row.value || 0) - Number(row.total_cost || 0)));
+      accumulator[monthName].count += 1;
+      return accumulator;
+    }, {})).map((row) => ({
+      name: row.name,
+      revenue: row.revenueTotal / Math.max(1, row.count),
+      profit: row.profitTotal / Math.max(1, row.count),
+      metricLabel: row.metricLabel,
+      monthIndex: row.monthIndex,
+      year: 0,
+    }))
+    : filteredProjectRows
+      .map((row, index) => ({
+        name: row.month_name
+          ? String(row.month_name).slice(0, 3)
+          : (row.name || `Point ${index + 1}`),
+        revenue: Number(row.total_revenue || row.value || 0),
+        profit: Number(row.net_revenue ?? (Number(row.total_revenue || row.value || 0) - Number(row.total_cost || 0))),
+        metricLabel: 'Revenue',
+        monthIndex: MONTH_ORDER.indexOf(row.month_name || ''),
+        year: Number(row.year || 0),
+      })))
+    .sort((leftEntry, rightEntry) => {
+      if (leftEntry.year !== rightEntry.year) return leftEntry.year - rightEntry.year;
+      return leftEntry.monthIndex - rightEntry.monthIndex;
+    });
 
   const previousPeriodRevenue = monthlyTrendRows.length > 1 ? monthlyTrendRows[monthlyTrendRows.length - 2].revenue : 0;
   const latestPeriodRevenue = monthlyTrendRows.length > 0 ? monthlyTrendRows[monthlyTrendRows.length - 1].revenue : totalRevenue;
@@ -3461,8 +3810,13 @@ function AdvancedAnalyticsBoard() {
   };
 
   const handleClearImportedData = async () => {
+    if (!projectId) {
+      alert('Open a project before clearing imported data.');
+      return;
+    }
+
     const confirmed = window.confirm(
-      'Clear all imported analytics data for all your projects? This keeps projects/entities but removes uploaded month data.'
+      'Clear imported analytics data for only this current project? This keeps the project/entity itself but removes its uploaded month data.'
     );
 
     if (!confirmed) {
@@ -3472,7 +3826,7 @@ function AdvancedAnalyticsBoard() {
     try {
       const response = await apiRequest({
         method: 'delete',
-        url: '/api/dashboard',
+        url: `/api/dashboard/${projectId}`,
         headers: { Authorization: `Bearer ${token}` },
       });
       setEntries([]);
@@ -3498,6 +3852,26 @@ function AdvancedAnalyticsBoard() {
               <span>{selectedProjectName}</span>
               {projectId && <span className="text-slate-400">ID {projectId}</span>}
             </div>
+            {availableYearOptions.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {availableYearOptions.map((year) => {
+                  const isActive = selectedYearFilter === year;
+                  return (
+                    <button
+                      key={year}
+                      type="button"
+                      onClick={() => setSelectedYearFilter(year)}
+                      className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isActive
+                        ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/15 dark:bg-white dark:text-slate-900'
+                        : 'border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white'
+                        }`}
+                    >
+                      {year}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4 2xl:grid-cols-3">
             <AnalyticsStat title="Total Sales" value={formatInrCompact(totalRevenue)} sub={`${activeRegions} live regions`} />
@@ -3524,7 +3898,14 @@ function AdvancedAnalyticsBoard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={monthlyTrendRows}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      interval={0}
+                      minTickGap={0}
+                      tick={{ fontSize: 11, fontWeight: 700 }}
+                    />
                     <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
                     <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
                     <Tooltip
@@ -4252,9 +4633,19 @@ function AdvancedAnalyticsBase() {
 }
 
 function AnalyticsPanel({ title, subtitle, children, className = '', downloadRef, downloadFilename, panelRef }) {
+  const containerRef = useRef(null);
+
   return (
-    <div ref={panelRef} className={`relative rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900 ${className}`}>
-      {downloadRef && <DownloadButton chartRef={downloadRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
+    <div
+      ref={(node) => {
+        containerRef.current = node;
+        if (panelRef) {
+          panelRef.current = node;
+        }
+      }}
+      className={`relative rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900 ${className}`}
+    >
+      {downloadRef && <DownloadButton chartRef={containerRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
       <div className="mb-6 pr-16">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{title}</div>
         <h3 className="mt-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">{subtitle}</h3>
