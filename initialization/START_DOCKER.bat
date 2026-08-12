@@ -22,9 +22,17 @@ echo [✓] Docker found
 echo.
 
 REM Get the directory where this script is located
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 echo Starting services...
+echo.
+
+REM Remove stale containers from previous runs
+echo Cleaning up stale containers...
+for %%C in (datavis_db datavis_api datavis_frontend) do (
+    docker rm -f %%C >nul 2>&1
+)
+docker-compose down --remove-orphans >nul 2>&1
 echo.
 
 REM Start all services
