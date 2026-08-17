@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useAIAssistant } from '../../context/AIAssistantContext';
 import { getDashboardSummary } from '../../services/projectService';
 import { COLORS } from '../../constants/colors';
 import { formatInrCompact } from '../../utils/formatters';
@@ -14,10 +15,10 @@ export function DashboardSummary() {
   const [summary, setSummary] = useState(null);
   const [viewYear, setViewYear] = useState('');
   const [availableYears, setAvailableYears] = useState([]);
-  const [showExplain, setShowExplain] = useState(false);
   const [drillMonth, setDrillMonth] = useState(null);
   const [hasData, setHasData] = useState(true);
   const { token } = useAuth();
+  const { openAssistant } = useAIAssistant();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +70,16 @@ export function DashboardSummary() {
   const revenueDisplay = formatInrCompact(stats.total_revenue || 0).replace('Rs ', '₹');
   const forecastDisplay = formatInrCompact(Math.round(Number(stats.total_revenue || 0) * 1.1)).replace('Rs ', '₹');
   const yearOptions = availableYears;
+  const assistantContext = {
+    page: 'dashboard',
+    projectName: 'Global Dashboard',
+    year: viewYear || yearOptions[yearOptions.length - 1] || '2024',
+    summary,
+    stats,
+    trend: trendData,
+    regionData,
+    categoryData,
+  };
 
   return (
     <div className="p-8 space-y-8 max-w-[1600px] mx-auto">
@@ -111,8 +122,23 @@ export function DashboardSummary() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button onClick={() => setShowExplain(true)} className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 text-[10px] font-black rounded-xl border border-indigo-100 dark:border-indigo-800 hover:scale-105 active:scale-95 transition-all">EXPLAIN AI</button>
-              <button className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-500 text-[10px] font-black rounded-xl border border-slate-100 dark:border-slate-700">COMPARE</button>
+              <button
+                onClick={() => openAssistant({ prompt: 'Explain this dashboard in simple terms.', context: assistantContext })}
+                className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 text-[10px] font-black rounded-xl border border-indigo-100 dark:border-indigo-800 hover:scale-105 active:scale-95 transition-all"
+              >
+                EXPLAIN AI
+              </button>
+              <button
+                onClick={() =>
+                  openAssistant({
+                    prompt: 'Compare the current period against the previous period and highlight the biggest differences.',
+                    context: assistantContext,
+                  })
+                }
+                className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-500 text-[10px] font-black rounded-xl border border-slate-100 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white transition-all"
+              >
+                COMPARE
+              </button>
             </div>
           </div>
 
@@ -215,8 +241,6 @@ export function DashboardSummary() {
         </div>
       )}
 
-      {/* Modal Overlays */}
-      {showExplain && <ExplainModal onClose={() => setShowExplain(false)} />}
       {drillMonth && <DrilldownModal month={drillMonth} onClose={() => setDrillMonth(null)} />}
     </div>
   );

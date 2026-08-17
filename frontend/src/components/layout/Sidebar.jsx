@@ -1,6 +1,9 @@
 import NavLink from './NavLink';
+import { useAIAssistant } from '../../context/AIAssistantContext';
 
 export function Sidebar({ isSidebarCollapsed, setIsSidebarCollapsed }) {
+  const { openAssistant } = useAIAssistant();
+
   return (
     <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col fixed h-full z-20 transition-all duration-300 shadow-2xl`}>
       <button
@@ -30,7 +33,13 @@ export function Sidebar({ isSidebarCollapsed, setIsSidebarCollapsed }) {
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-6 overflow-y-auto no-scrollbar">
-        <button className={`bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold border border-indigo-100 dark:border-indigo-800 transition-all ui-hover shadow-sm ${isSidebarCollapsed ? 'mx-auto flex h-12 w-12 items-center justify-center' : 'w-full flex items-center gap-3 p-3'}`}>
+        <button
+          type="button"
+          onClick={() => openAssistant()}
+          className={`bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold border border-indigo-100 dark:border-indigo-800 transition-all ui-hover shadow-sm ${isSidebarCollapsed ? 'mx-auto flex h-12 w-12 items-center justify-center' : 'w-full flex items-center gap-3 p-3'}`}
+          aria-label="Open Ask Yua AI chat"
+          title="Open Ask Yua AI chat"
+        >
           <span className="material-symbols-outlined text-indigo-500">auto_awesome</span>
           {!isSidebarCollapsed && <span>Ask Yua AI</span>}
         </button>

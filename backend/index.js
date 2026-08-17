@@ -5,6 +5,7 @@ const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
 const projectsRouter = require('./routes/projects');
 const dashboardRouter = require('./routes/dashboard');
+const aiRouter = require('./routes/ai');
 const userRouter = require('./routes/user');
 const notificationsRouter = require('./routes/notifications');
 
@@ -22,6 +23,7 @@ app.use('/api/auth', authRouter);
 app.use('/api', uploadRouter);
 app.use('/api', projectsRouter);
 app.use('/api', dashboardRouter);
+app.use('/api', aiRouter);
 app.use('/api', userRouter);
 app.use('/api', notificationsRouter);
 

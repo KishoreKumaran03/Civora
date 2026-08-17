@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AIAssistantProvider } from './context/AIAssistantContext';
 
 // Pages
 import { DashboardSummary } from './pages/Dashboard/DashboardSummary';
@@ -18,6 +19,7 @@ import { Signup } from './pages/Auth/Signup';
 // Layout
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
+import { AskYuaChatPanel } from './components/ai/AskYuaChatPanel';
 
 function AppRoutes() {
   const { token } = useAuth();
@@ -57,6 +59,7 @@ function AppRoutes() {
                   </Routes>
                 </main>
               </div>
+              <AskYuaChatPanel />
             </div>
           ) : (
             <Navigate to="/login" replace />
@@ -71,9 +74,11 @@ function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
+        <AIAssistantProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </AIAssistantProvider>
       </ThemeProvider>
     </AuthProvider>
   );
