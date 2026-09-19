@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAIAssistant } from '../../context/AIAssistantContext';
-import { sendAIAssistantMessage } from '../../services/aiService';
+import { getAIAssistantHealth, sendAIAssistantMessage } from '../../services/aiService';
+import { getProjects } from '../../services/projectService';
 
 function buildChatPayload(messages, assistantContext) {
   return {
@@ -15,8 +17,137 @@ function buildChatPayload(messages, assistantContext) {
   };
 }
 
+function getYearDateRange(year) {
+  const numericYear = Number(year);
+  if (!Number.isFinite(numericYear)) {
+    return null;
+  }
+
+  return {
+    startDate: `${numericYear}-01-01`,
+    endDate: `${numericYear}-12-31`,
+  };
+}
+
+function shouldRequestSalesData(text) {
+  const normalized = String(text || '').toLowerCase();
+  if (!normalized) return false;
+
+  const triggerWords = [
+    'sales',
+    'revenue',
+    'profit',
+    'cost',
+    'quantity',
+    'kpi',
+    'metric',
+    'metrics',
+    'trend',
+    'trends',
+    'chart',
+    'charts',
+    'report',
+    'summary',
+    'summaries',
+    'compare',
+    'comparison',
+    'forecast',
+    'predict',
+    'prediction',
+    'anomaly',
+    'insight',
+    'insights',
+    'performance',
+    'business',
+  ];
+
+  return triggerWords.some((word) => normalized.includes(word));
+}
+
+function buildAiRequestContext(assistantContext, routeContext) {
+  const requestedStoreId =
+    assistantContext?.requested_store_id ??
+    assistantContext?.requestedStoreId ??
+    assistantContext?.store_id ??
+    assistantContext?.storeId ??
+    assistantContext?.projectId ??
+    routeContext?.projectId ??
+    routeContext?.storeId ??
+    null;
+
+  const selectedYear = assistantContext?.year || routeContext?.year || null;
+  const yearRange = getYearDateRange(selectedYear);
+  const hasStoreContext = Boolean(requestedStoreId);
+
+  return {
+    ...assistantContext,
+    requested_store_id: requestedStoreId,
+    selected_store_id: assistantContext?.selected_store_id || assistantContext?.selectedStoreId || requestedStoreId,
+    page: assistantContext?.page || routeContext?.page || null,
+    year: selectedYear,
+    salesDataRequest: hasStoreContext && yearRange
+      ? {
+          storeId: requestedStoreId,
+          startDate: yearRange.startDate,
+          endDate: yearRange.endDate,
+        }
+      : null,
+  };
+}
+
+function normalizeStoreSelection(storeId) {
+  if (storeId == null || storeId === '' || storeId === 'all') {
+    return null;
+  }
+
+  return String(storeId);
+}
+
+const OLLAMA_OUTAGE_CODES = new Set([
+  'OLLAMA_TIMEOUT',
+  'OLLAMA_UNAVAILABLE',
+  'OLLAMA_REQUEST_FAILED',
+  'OLLAMA_MALFORMED_RESPONSE',
+  'OLLAMA_MODEL_NOT_FOUND',
+]);
+
+function getFriendlyAiErrorMessage(error) {
+  const responseData = error?.response?.data || {};
+  return responseData.error || responseData.message || error?.message || 'Sorry, I could not reach the AI service.';
+}
+
+function AssistantReply({ content }) {
+  const lines = String(content || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/^\s*(?:[-*•]|\d+\.)\s+/, '').trim())
+    .filter(Boolean);
+  const isList = lines.length > 1 && String(content || '').split('\n').filter((line) => line.trim()).every((line) => /^\s*(?:[-*•]|\d+\.)\s+/.test(line));
+
+  if (isList) {
+    return (
+      <ul className="space-y-2">
+        {lines.map((line, index) => (
+          <li key={`${line}-${index}`} className="flex gap-3">
+            <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {lines.map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}
+    </div>
+  );
+}
+
 export function AskYuaChatPanel() {
   const { token } = useAuth();
+  const location = useLocation();
+  const routeParams = useParams();
   const {
     isOpen,
     initialPrompt,
@@ -31,8 +162,17 @@ export function AskYuaChatPanel() {
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState('');
   const [connectionStatus, setConnectionStatus] = useState('checking');
+  const [storeSelectionRequired, setStoreSelectionRequired] = useState(false);
+  const [stores, setStores] = useState([]);
+  const [selectedStoreId, setSelectedStoreId] = useState('all');
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const aiContext = buildAiRequestContext(assistantContext, {
+    projectId: routeParams.projectId || null,
+    storeId: routeParams.storeId || null,
+    page: location.pathname.startsWith('/advanced-analytics') ? 'analytics' : 'dashboard',
+    year: location.state?.year || null,
+  });
 
   useEffect(() => {
     if (!isOpen) {
@@ -42,6 +182,7 @@ export function AskYuaChatPanel() {
     setInputValue(initialPrompt || '');
     setSendError('');
     setConnectionStatus('checking');
+    setStoreSelectionRequired(false);
 
     const timer = window.setTimeout(() => {
       textareaRef.current?.focus();
@@ -49,6 +190,79 @@ export function AskYuaChatPanel() {
 
     return () => window.clearTimeout(timer);
   }, [initialPrompt, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !token) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const checkHealth = async () => {
+      try {
+        const response = await getAIAssistantHealth(token);
+        if (cancelled) return;
+        setConnectionStatus(response.data?.status === 'ok' ? 'connected' : 'checking');
+      } catch (error) {
+        if (cancelled) return;
+        const code = error?.response?.data?.code;
+        setConnectionStatus(code && !OLLAMA_OUTAGE_CODES.has(code) ? 'connected' : 'unavailable');
+      }
+    };
+
+    checkHealth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, token]);
+
+  useEffect(() => {
+    if (!isOpen || !token) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const loadStores = async () => {
+      try {
+        const response = await getProjects(token);
+        if (cancelled) return;
+
+        const nextStores = Array.isArray(response.data) ? response.data : [];
+        setStores(nextStores);
+
+        const preferredStoreId =
+          assistantContext?.selected_store_id ??
+          assistantContext?.selectedStoreId ??
+          assistantContext?.requested_store_id ??
+          assistantContext?.requestedStoreId ??
+          assistantContext?.store_id ??
+          assistantContext?.storeId ??
+          routeParams.projectId ??
+          routeParams.storeId ??
+          null;
+
+        if (preferredStoreId != null && preferredStoreId !== '') {
+          setSelectedStoreId(String(preferredStoreId));
+        } else if (nextStores.length === 1) {
+          setSelectedStoreId(String(nextStores[0].id));
+        } else {
+          setSelectedStoreId((current) => current || 'all');
+        }
+      } catch (_error) {
+        if (!cancelled) {
+          setStores([]);
+        }
+      }
+    };
+
+    loadStores();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [assistantContext, isOpen, routeParams.projectId, routeParams.storeId, token]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -94,10 +308,24 @@ export function AskYuaChatPanel() {
     setSendError('');
 
     try {
-      const response = await sendAIAssistantMessage(buildChatPayload([...messages, userMessage], assistantContext), token);
+      const explicitStoreId = normalizeStoreSelection(selectedStoreId);
+      const shouldIncludeSalesData = shouldRequestSalesData(text);
+      const requestContext = {
+        ...aiContext,
+        selected_store_id: explicitStoreId,
+        selectedStoreId: explicitStoreId,
+        requested_store_id: explicitStoreId,
+        requestedStoreId: explicitStoreId,
+        salesDataRequest: shouldIncludeSalesData ? aiContext.salesDataRequest : null,
+      };
+      const response = await sendAIAssistantMessage(
+        buildChatPayload([...messages, userMessage], requestContext),
+        token
+      );
       const assistantReply =
         response.data?.reply || response.data?.message || response.data?.answer || 'I could not generate a response.';
-      setConnectionStatus(response.data?.source === 'watsonx-orchestrate' ? 'connected' : 'checking');
+      setConnectionStatus(response.data?.source === 'civora-yua' ? 'connected' : 'checking');
+      setStoreSelectionRequired(Boolean(response.data?.context_summary?.store_selection_required));
 
       setMessages((currentMessages) =>
         currentMessages.map((message) =>
@@ -106,21 +334,22 @@ export function AskYuaChatPanel() {
                 ...message,
                 content: assistantReply,
                 isPlaceholder: false,
-                source: response.data?.source || 'watsonx-orchestrate',
+                source: response.data?.source || 'civora-yua',
                 context_summary: response.data?.context_summary,
               }
             : message
         )
       );
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        error.message ||
-        'Sorry, I could not reach the AI service.';
+      const errorMessage = getFriendlyAiErrorMessage(error);
+      const code = error?.response?.data?.code;
+      const stage = error?.response?.data?.stage;
 
       setSendError(errorMessage);
-      setConnectionStatus('unavailable');
+      setConnectionStatus(code && !OLLAMA_OUTAGE_CODES.has(code) ? 'connected' : 'unavailable');
+      if (stage) {
+        console.error(`[AI] Request failed at ${stage}: ${code || 'UNKNOWN_ERROR'}`);
+      }
       setMessages((currentMessages) =>
         currentMessages.map((message) =>
           message.id === placeholderMessage.id
@@ -150,6 +379,17 @@ export function AskYuaChatPanel() {
     setInputValue('');
     setSendError('');
     setConnectionStatus('checking');
+    setStoreSelectionRequired(false);
+    if (assistantContext?.selected_store_id || assistantContext?.selectedStoreId || assistantContext?.requested_store_id || assistantContext?.requestedStoreId || assistantContext?.store_id || assistantContext?.storeId) {
+      const initialStoreId =
+        assistantContext?.selected_store_id ||
+        assistantContext?.selectedStoreId ||
+        assistantContext?.requested_store_id ||
+        assistantContext?.requestedStoreId ||
+        assistantContext?.store_id ||
+        assistantContext?.storeId;
+      setSelectedStoreId(initialStoreId != null ? String(initialStoreId) : 'all');
+    }
     resetConversation();
   };
 
@@ -166,17 +406,17 @@ export function AskYuaChatPanel() {
   const connectionBadge =
     connectionStatus === 'connected'
       ? {
-          label: 'IBM connected',
+          label: 'Ollama connected',
           className:
             'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-300',
         }
       : connectionStatus === 'unavailable'
       ? {
-          label: 'IBM unavailable',
+          label: 'Ollama unavailable',
           className: 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300',
         }
       : {
-          label: 'IBM checking',
+          label: 'Ollama checking',
           className: 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-300',
         };
 
@@ -207,17 +447,17 @@ export function AskYuaChatPanel() {
         <div className="relative z-10 flex h-full min-h-0 flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
           <div className="mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col overflow-hidden rounded-[2rem] border border-white/50 bg-white/85 shadow-[0_30px_100px_rgba(15,23,42,0.22)] backdrop-blur-2xl dark:border-slate-700/60 dark:bg-slate-950/75">
             <div className="flex items-center justify-between border-b border-slate-200/80 px-5 py-4 sm:px-6 dark:border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
-                  <span className="material-symbols-outlined">auto_awesome</span>
-                </div>
-                <div>
-                  <div className="text-sm font-black tracking-tight text-slate-900 dark:text-white">Ask Yua AI</div>
-                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                    Backend API key integration
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+                    <span className="material-symbols-outlined">auto_awesome</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-black tracking-tight text-slate-900 dark:text-white">Ask Yua AI</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
+                    Local Ollama integration
+                    </div>
                   </div>
                 </div>
-              </div>
 
               <div className="flex items-center gap-2">
                 <div
@@ -271,6 +511,28 @@ export function AskYuaChatPanel() {
                     </div>
                   </div>
                 </div>
+
+                <div className="mt-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/60">
+                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Active store</div>
+                  <label className="mt-3 block">
+                    <span className="sr-only">Select a store</span>
+                    <select
+                      value={selectedStoreId}
+                      onChange={(event) => setSelectedStoreId(event.target.value)}
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700 outline-none transition-all focus:border-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                    >
+                      <option value="all">All Stores</option>
+                      {stores.map((store) => (
+                        <option key={store.id} value={store.id}>
+                          {store.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="mt-3 text-[11px] font-medium leading-relaxed text-slate-400 dark:text-slate-500">
+                    Pick the store you want CIVORA to use for AI answers and reports.
+                  </div>
+                </div>
               </div>
 
               <div className="flex min-h-0 flex-col">
@@ -301,7 +563,9 @@ export function AskYuaChatPanel() {
                               : 'border border-slate-200 bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200'
                           }`}
                         >
-                          <div className="whitespace-pre-wrap">{message.content}</div>
+                          {message.role === 'assistant' && !message.isError
+                            ? <AssistantReply content={message.content} />
+                            : <div className="whitespace-pre-wrap">{message.content}</div>}
                           {message.source && (
                             <div className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-60">
                               {message.source}
@@ -335,6 +599,11 @@ export function AskYuaChatPanel() {
                     {sendError ? (
                       <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/30 dark:bg-rose-950/20 dark:text-rose-200">
                         {sendError}
+                      </div>
+                    ) : null}
+                    {storeSelectionRequired ? (
+                      <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-900/30 dark:bg-amber-950/20 dark:text-amber-200">
+                        Store context is available, but an explicit active store has not been selected yet.
                       </div>
                     ) : null}
                     <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

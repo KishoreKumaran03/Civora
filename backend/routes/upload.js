@@ -1,9 +1,11 @@
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 const { authenticateToken } = require('../middleware/auth');
 const { runPythonUploadTask } = require('../utils/pythonTask');
+const { runProphetRetrain } = require('../utils/prophetTraining');
 const { uploadPreviewStore, cleanupUploadPreviews, removeUploadPreview } = require('../utils/previewStore');
 
 const storage = multer.diskStorage({
@@ -213,9 +215,45 @@ router.post('/upload/complete', authenticateToken, async (req, res) => {
       removeUploadPreview(item.preview_id);
     }
 
+    let retrainStatus = 'queued';
+    let retrainSummary = null;
+    try {
+      retrainSummary = await runProphetRetrain({ source: 'database' });
+      retrainStatus = 'completed';
+    } catch (trainingError) {
+      retrainStatus = 'failed';
+      console.error('Prophet retraining failed after import:', trainingError.message);
+    }
+
+    let storeRetrainStatus = 'queued';
+    let storeRetrainSummary = null;
+    try {
+      const storeOutputDir = path.join(__dirname, '..', 'models', 'prophet', 'stores', `project_${project_id}`);
+      storeRetrainSummary = await runProphetRetrain({
+        source: 'database',
+        projectId: project_id,
+        outputDir: storeOutputDir,
+      });
+      storeRetrainStatus = 'completed';
+    } catch (trainingError) {
+      storeRetrainStatus = 'failed';
+      console.error(`Store Prophet retraining failed for project ${project_id}:`, trainingError.message);
+    }
+
     res.json({
       message: itemsToProcess.length > 1 ? 'Batch import completed successfully' : 'Data processed successfully',
       data: processedResults,
+      retrain: {
+        status: retrainStatus,
+        source: 'database',
+        trained_at: retrainSummary?.trained_at || null,
+      },
+      store_retrain: {
+        status: storeRetrainStatus,
+        source: 'database',
+        project_id,
+        trained_at: storeRetrainSummary?.trained_at || null,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: 'Data processing failed', details: error.message });

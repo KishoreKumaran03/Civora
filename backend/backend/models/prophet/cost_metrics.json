@@ -1,0 +1,94 @@
+{
+  "target": "cost",
+  "granularity": "monthly",
+  "target_transform": "log1p",
+  "data_points": 60,
+  "train_points": 54,
+  "test_points": 6,
+  "history_start": "2021-01-01",
+  "history_end": "2025-12-01",
+  "test_start": "2025-07-01",
+  "test_end": "2025-12-01",
+  "selected_model_configuration": "Model C (+ Holidays + Promotions)",
+  "regressors_used": [
+    "clearance_promo_days",
+    "festival_holiday_count",
+    "festival_promo_days",
+    "flash_sale_days",
+    "holiday_active",
+    "holiday_count",
+    "promo_active",
+    "promo_count",
+    "promo_days",
+    "promo_discount_max",
+    "seasonal_promo_days"
+  ],
+  "model_comparison": [
+    {
+      "configuration": "Model A (Baseline)",
+      "description": "Revenue + conservative seasonality (no external event regressors)",
+      "regressors": [],
+      "evaluation": {
+        "mae": 2960816.4894,
+        "rmse": 4188342.3977,
+        "mape": 11.9348
+      },
+      "selected": false
+    },
+    {
+      "configuration": "Model B (+ Holidays)",
+      "description": "Revenue + seasonality + holidays (holiday_active, holiday_count, festival_holiday_count)",
+      "regressors": [
+        "holiday_active",
+        "holiday_count",
+        "festival_holiday_count"
+      ],
+      "evaluation": {
+        "mae": 2061497.7229,
+        "rmse": 2702876.9274,
+        "mape": 8.4961
+      },
+      "selected": false
+    },
+    {
+      "configuration": "Model C (+ Holidays + Promotions)",
+      "description": "Revenue + seasonality + holidays + promotions",
+      "regressors": [
+        "clearance_promo_days",
+        "festival_holiday_count",
+        "festival_promo_days",
+        "flash_sale_days",
+        "holiday_active",
+        "holiday_count",
+        "promo_active",
+        "promo_count",
+        "promo_days",
+        "promo_discount_max",
+        "seasonal_promo_days"
+      ],
+      "evaluation": {
+        "mae": 1297649.5472,
+        "rmse": 1789194.3988,
+        "mape": 5.256
+      },
+      "selected": true
+    }
+  ],
+  "evaluation": {
+    "mae": 1297649.5472,
+    "rmse": 1789194.3988,
+    "mape": 5.256
+  },
+  "sanity_diagnostics": {
+    "hist_min": 14512570.0,
+    "hist_max": 33192476.0,
+    "hist_mean": 18731829.633333333,
+    "hist_median": 17112452.5,
+    "fcst_min": 17533228.9358977,
+    "fcst_max": 32427148.112058364,
+    "fcst_mean": 20111773.839720663,
+    "fcst_median": 18728529.91557167,
+    "forecast_to_hist_ratio": 1.07
+  },
+  "trained_at": "2026-09-19T10:01:42.882589+00:00"
+}

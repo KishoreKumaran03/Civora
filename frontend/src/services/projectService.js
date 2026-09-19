@@ -49,3 +49,30 @@ export function getDashboardSummary(year, token) {
     headers: { Authorization: `Bearer ${token}` }
   });
 }
+
+export function getRevenueForecast(months, token, projectId = null) {
+  const projectQuery = projectId ? `&projectId=${projectId}` : '';
+  return apiRequest({
+    method: 'get',
+    url: `/api/forecast/revenue?months=${months}${projectQuery}`,
+    headers: { Authorization: `Bearer ${token}` }
+  });
+}
+
+export function getCostForecast(months, token, projectId = null) {
+  const projectQuery = projectId ? `&projectId=${projectId}` : '';
+  return apiRequest({
+    method: 'get',
+    url: `/api/forecast/cost?months=${months}${projectQuery}`,
+    headers: { Authorization: `Bearer ${token}` }
+  });
+}
+
+export function getProfitForecast(months, token, projectId = null) {
+  const projectQuery = projectId ? `&projectId=${projectId}` : '';
+  return apiRequest({
+    method: 'get',
+    url: `/api/forecast/profit?months=${months}${projectQuery}`,
+    headers: { Authorization: `Bearer ${token}` }
+  });
+}

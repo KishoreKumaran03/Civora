@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-09-19T06:47:38.750Z",
+  "options": {
+    "userId": 10,
+    "storeId": 1,
+    "maxIterations": 3
+  },
+  "questions": 30,
+  "passed_first_attempt": 28,
+  "corrected_after_retry": 0,
+  "passed_final": 28,
+  "failed_after_retries": 2,
+  "initial_average": 98.9,
+  "final_average": 98.9,
+  "questions_requiring_correction": [
+    {
+      "id": "Q10",
+      "initial_score": 76,
+      "final_score": 76,
+      "passed": false,
+      "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors."
+    },
+    {
+      "id": "Q24",
+      "initial_score": 91,
+      "final_score": 91,
+      "passed": false,
+      "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors."
+    }
+  ],
+  "critical_failures": [
+    {
+      "id": "Q10",
+      "failures": [
+        "incorrect_direction_claimed",
+        "Incorrectly stated November performed better than October."
+      ]
+    },
+    {
+      "id": "Q24",
+      "failures": [
+        "Did not identify Laptop as the top revenue-generating product."
+      ]
+    }
+  ],
+  "most_common_failure_types": [
+    {
+      "failure": "incorrect_direction_claimed",
+      "count": 1
+    },
+    {
+      "failure": "Incorrectly stated November performed better than October.",
+      "count": 1
+    },
+    {
+      "failure": "Did not identify Laptop as the top revenue-generating product.",
+      "count": 1
+    }
+  ],
+  "weakest_capabilities": [
+    {
+      "category": "comparative_reasoning",
+      "average": 94
+    },
+    {
+      "category": "multi_metric_reasoning",
+      "average": 97.8
+    },
+    {
+      "category": "basic_knowledge",
+      "average": 100
+    }
+  ],
+  "recommended_architecture_changes": []
+}

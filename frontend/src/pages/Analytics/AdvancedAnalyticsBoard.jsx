@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../services/api';
+import { getRevenueForecast, getCostForecast, getProfitForecast } from '../../services/projectService';
 import { COLORS } from '../../constants/colors';
 import { MONTH_ORDER } from '../../constants/months';
 import {
@@ -233,6 +234,15 @@ export function AdvancedAnalyticsBoard() {
   const [selectedYearFilter, setSelectedYearFilter] = useState('all');
   const [selectedTimeWindow, setSelectedTimeWindow] = useState('all');
   const [projectionWindow, setProjectionWindow] = useState('3');
+  const [revenueForecast, setRevenueForecast] = useState(null);
+  const [revenueForecastError, setRevenueForecastError] = useState('');
+  const [isRevenueForecastLoading, setIsRevenueForecastLoading] = useState(false);
+  const [costForecast, setCostForecast] = useState(null);
+  const [costForecastError, setCostForecastError] = useState('');
+  const [isCostForecastLoading, setIsCostForecastLoading] = useState(false);
+  const [profitForecast, setProfitForecast] = useState(null);
+  const [profitForecastError, setProfitForecastError] = useState('');
+  const [isProfitForecastLoading, setIsProfitForecastLoading] = useState(false);
   const [compareProducts, setCompareProducts] = useState([]);
   const [compareMonths, setCompareMonths] = useState([]);
   const [compareRegions, setCompareRegions] = useState([]);
@@ -286,6 +296,123 @@ export function AdvancedAnalyticsBoard() {
 
     fetchProjectAnalytics();
   }, [location.state, projectId, token]);
+
+  const fetchCostForecast = async () => {
+    try {
+      setIsCostForecastLoading(true);
+      setCostForecastError('');
+      const response = await getCostForecast(Number(projectionWindow) || 3, token, projectId);
+      setCostForecast(response.data || null);
+    } catch (error) {
+      console.error('Error fetching cost forecast for advanced analytics:', error);
+      setCostForecast(null);
+      setCostForecastError(error.response?.data?.error || 'Cost forecast generation failed.');
+    } finally {
+      setIsCostForecastLoading(false);
+    }
+  };
+
+  const fetchProfitForecast = async () => {
+    try {
+      setIsProfitForecastLoading(true);
+      setProfitForecastError('');
+      const response = await getProfitForecast(Number(projectionWindow) || 3, token, projectId);
+      setProfitForecast(response.data || null);
+    } catch (error) {
+      console.error('Error fetching profit forecast for advanced analytics:', error);
+      setProfitForecast(null);
+      setProfitForecastError(error.response?.data?.error || 'Profit forecast generation failed.');
+    } finally {
+      setIsProfitForecastLoading(false);
+    }
+  };
+
+  const fetchRevenueForecast = async () => {
+    try {
+      setIsRevenueForecastLoading(true);
+      setRevenueForecastError('');
+      const response = await getRevenueForecast(Number(projectionWindow) || 3, token, projectId);
+      setRevenueForecast(response.data || null);
+    } catch (error) {
+      console.error('Error fetching revenue forecast for advanced analytics:', error);
+      setRevenueForecast(null);
+      setRevenueForecastError(error.response?.data?.error || 'Store-specific forecast generation failed.');
+    } finally {
+      setIsRevenueForecastLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    if (token) {
+      (async () => {
+        await fetchRevenueForecast();
+        await fetchCostForecast();
+        await fetchProfitForecast();
+        isCurrentRequest = false;
+      })();
+    }
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [projectionWindow, token, projectId]);
+
+  // Helper function to build forecast trend rows for any metric
+  const buildForecastTrendRows = (forecast, metricKeyPrefix) => {
+    const combinedRows = Array.isArray(forecast?.combined_trend) ? forecast.combined_trend : [];
+    const historicalRows = Array.isArray(forecast?.historical_monthly) ? forecast.historical_monthly : [];
+    const monthlyForecastRows = Array.isArray(forecast?.monthly_forecast) ? forecast.monthly_forecast : [];
+
+    if (combinedRows.length > 0) {
+      return combinedRows.map((row) => ({
+        name: String(row.name || row.month || '').trim(),
+        [`${metricKeyPrefix}_actual`]: row.actual == null ? null : Number(row.actual || 0),
+        [`${metricKeyPrefix}_projected`]: row.projected == null ? null : Number(row.projected || 0),
+      }));
+    }
+
+    if (historicalRows.length > 0 || monthlyForecastRows.length > 0) {
+      return [
+        ...historicalRows.map((row) => ({
+          name: String(row.name || row.month || '').trim(),
+          [`${metricKeyPrefix}_actual`]: Number(row.actual ?? row.yhat ?? 0),
+          [`${metricKeyPrefix}_projected`]: null,
+        })),
+        ...monthlyForecastRows.map((row) => ({
+          name: String(row.name || row.month || '').trim(),
+          [`${metricKeyPrefix}_actual`]: null,
+          [`${metricKeyPrefix}_projected`]: Number(row.yhat ?? row.projected ?? 0),
+        })),
+      ];
+    }
+
+    return [];
+  };
+
+  // Merge all three forecasts into single trend rows
+  const allForecastTrendRows = (() => {
+    const revenueTrend = buildForecastTrendRows(revenueForecast, 'revenue');
+    const costTrend = buildForecastTrendRows(costForecast, 'cost');
+    const profitTrend = buildForecastTrendRows(profitForecast, 'profit');
+
+    if (revenueTrend.length === 0) return [];
+
+    return revenueTrend.map((revRow, idx) => ({
+      ...revRow,
+      ...(costTrend[idx] || {}),
+      ...(profitTrend[idx] || {}),
+    }));
+  })();
+
+  const avgAllLoading = (isRevenueForecastLoading || isCostForecastLoading || isProfitForecastLoading);
+  const anyError = revenueForecastError || costForecastError || profitForecastError;
+  const selectedForecastMetrics = selectedYAxes
+    .filter((axis) => ['revenue', 'cost', 'profit'].includes(axis))
+    .map((axis) => ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === axis)?.label)
+    .join(', ') || 'Revenue';
+
 
   const availableCategoryOptions = [...new Set(entries.map((entry) => entry.category).filter(Boolean))].sort((left, right) => left.localeCompare(right));
   const availableRegionOptions = [...new Set(entries.map((entry) => entry.region).filter(Boolean))].sort((left, right) => left.localeCompare(right));
@@ -348,95 +475,11 @@ export function AdvancedAnalyticsBoard() {
   const aggregatedAxisData = aggregateEntriesForAxis(sortedEntries, selectedXAxis, selectedYAxis, {
     averageMonthAcrossYears: shouldAverageAcrossYears,
   });
-  const projectionMetricKeys = selectedYAxes.length > 0 ? selectedYAxes : ['revenue'];
-  const projectionMetricLabels = projectionMetricKeys
-    .map((metricKey) => ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey);
   const productAxisData = aggregateEntriesForAxis(sortedEntries, 'label', selectedYAxis);
   const categoryAxisData = aggregateEntriesForAxis(sortedEntries, 'category', selectedYAxis);
   const pieData = categoryAxisData.map((entry) => ({ name: entry.name, value: entry.value, color: entry.fill }));
   const histogramRanges = buildHistogramData(sortedEntries, selectedYAxis);
   const selectedMetricTotal = sortedEntries.reduce((sum, entry) => sum + getAnalyticsMetric(entry, selectedYAxis), 0);
-  const projectionTrendRows = (() => {
-    const grouped = sortedEntries.reduce((accumulator, entry) => {
-      const monthName = entry.month || 'January';
-      const yearValue = Number(entry.year || new Date(entry.recordedAt).getFullYear());
-      const monthIndex = MONTH_ORDER.indexOf(monthName);
-      const safeMonthIndex = monthIndex >= 0 ? monthIndex : 0;
-      const key = `${yearValue}-${safeMonthIndex}`;
-
-      if (!accumulator[key]) {
-        accumulator[key] = {
-          year: yearValue,
-          monthIndex: safeMonthIndex,
-          monthName: MONTH_ORDER[safeMonthIndex],
-        };
-        projectionMetricKeys.forEach((metricKey) => {
-          accumulator[key][metricKey] = 0;
-        });
-      }
-
-      projectionMetricKeys.forEach((metricKey) => {
-        accumulator[key][metricKey] += getAnalyticsMetric(entry, metricKey);
-      });
-      return accumulator;
-    }, {});
-
-    const actualBuckets = Object.values(grouped).sort((leftEntry, rightEntry) => {
-      if (leftEntry.year !== rightEntry.year) return leftEntry.year - rightEntry.year;
-      return leftEntry.monthIndex - rightEntry.monthIndex;
-    });
-
-    const actualRows = actualBuckets.map((entry) => {
-      const row = {
-        name: `${entry.monthName.slice(0, 3)} ${String(entry.year).slice(-2)}`,
-      };
-      projectionMetricKeys.forEach((metricKey) => {
-        row[`${metricKey}_actual`] = Number(entry[metricKey] || 0);
-        row[`${metricKey}_projected`] = null;
-      });
-      return row;
-    });
-
-    if (actualRows.length === 0) {
-      return [];
-    }
-
-    const lastBucket = actualBuckets[actualBuckets.length - 1];
-    let monthIndex = lastBucket.monthIndex;
-    let yearValue = lastBucket.year;
-    const futureRows = [];
-
-    const projectedMonths = Number(projectionWindow) || 3;
-    for (let index = 1; index <= projectedMonths; index += 1) {
-      monthIndex += 1;
-      if (monthIndex > 11) {
-        monthIndex = 0;
-        yearValue += 1;
-      }
-
-      futureRows.push({
-        name: `${MONTH_ORDER[monthIndex].slice(0, 3)} ${String(yearValue).slice(-2)}`,
-      });
-    }
-
-    projectionMetricKeys.forEach((metricKey) => {
-      const lastActual = Number(actualRows[actualRows.length - 1][`${metricKey}_actual`] || 0);
-      actualRows[actualRows.length - 1][`${metricKey}_projected`] = lastActual;
-      const previousActual = actualRows.length > 1
-        ? Number(actualRows[actualRows.length - 2][`${metricKey}_actual`] || 0)
-        : 0;
-      const growthRate = previousActual > 0 ? (lastActual - previousActual) / previousActual : 0.08;
-      let forecastBase = lastActual;
-
-      futureRows.forEach((row) => {
-        forecastBase = Math.max(0, Math.round(forecastBase * (1 + growthRate)));
-        row[`${metricKey}_actual`] = null;
-        row[`${metricKey}_projected`] = forecastBase;
-      });
-    });
-
-    return [...actualRows, ...futureRows];
-  })();
   const realtimeFeed = [...sortedEntries]
     .sort((leftEntry, rightEntry) => new Date(rightEntry.recordedAt) - new Date(leftEntry.recordedAt))
     .slice(0, 5);
@@ -706,7 +749,7 @@ export function AdvancedAnalyticsBoard() {
             <div className="relative h-[420px]">
               <div ref={monthlyTrendChartRef} className="w-full h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={monthlyTrendRows}>
+                  <ComposedChart data={monthlyTrendRows} margin={{ top: 8, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
                     <XAxis
                       dataKey="name"
@@ -716,15 +759,28 @@ export function AdvancedAnalyticsBoard() {
                       minTickGap={0}
                       tick={{ fontSize: 11, fontWeight: 700 }}
                     />
-                    <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-                    <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                    <YAxis
+                      yAxisId="left"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 11 }}
+                      tickFormatter={(value) => formatInrCompact(value)}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 11 }}
+                      tickFormatter={(value) => formatInrCompact(value)}
+                    />
                     <Tooltip
                       formatter={(value, name, item) => {
                         const metricName = item?.dataKey === 'profit' ? 'Profit' : 'Revenue';
                         return [formatInrCompact(value), metricName];
                       }}
                     />
-                    <Legend />
+                    <Legend verticalAlign="bottom" height={28} />
                     <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#38bdf8" radius={[10, 10, 0, 0]} />
                     <Line yAxisId="right" type="monotone" dataKey="profit" name="Profit" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
                   </ComposedChart>
@@ -858,63 +914,109 @@ export function AdvancedAnalyticsBoard() {
         </div>
       </div>
 
-      <AnalyticsPanel title="Real-Time Visualization" subtitle={`${projectionMetricLabels.join(' + ')} actual vs next ${projectionWindow}-month projection`} downloadRef={projectionChartRef} downloadFilename="projection-chart">
-        <div className="relative h-56">
+      <AnalyticsPanel title="Real-Time Visualization" subtitle={`${selectedForecastMetrics} actual vs next ${projectionWindow}-month projection`} downloadRef={projectionChartRef} downloadFilename="projection-chart">
+        <div className="relative h-96">
           <div ref={projectionChartRef} className="w-full h-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={projectionTrendRows}>
+              <LineChart data={allForecastTrendRows}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.15} />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
                 <Tooltip
-                  formatter={(value, seriesName, item) => {
+                  formatter={(value, seriesName) => {
                     if (value == null) {
                       return ['-', seriesName];
                     }
-                    const metricKey = String(item?.dataKey || '').split('_')[0];
-                    return [formatMetricValue(metricKey, value), seriesName];
+                    return [formatInrCompact(value), seriesName];
                   }}
                 />
                 <Legend />
-                {projectionMetricKeys.map((metricKey) => {
-                  const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
-                  const strokeColor = '#2563eb';
-                  return (
-                    <Line
-                      key={`${metricKey}-actual`}
-                      type="monotone"
-                      dataKey={`${metricKey}_actual`}
-                      name={`${metricLabel} (Actual)`}
-                      stroke={strokeColor}
-                      strokeWidth={3}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
-                      connectNulls
-                    />
-                  );
-                })}
-                {projectionMetricKeys.map((metricKey) => {
-                  const metricLabel = ANALYTICS_Y_AXIS_OPTIONS.find((option) => option.value === metricKey)?.label || metricKey;
-                  const strokeColor = '#9333ea';
-                  return (
-                    <Line
-                      key={`${metricKey}-projected`}
-                      type="monotone"
-                      dataKey={`${metricKey}_projected`}
-                      name={`${metricLabel} (Projected)`}
-                      stroke={strokeColor}
-                      strokeWidth={3}
-                      strokeDasharray="6 4"
-                      dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill={strokeColor} />)}
-                      activeDot={{ r: 6 }}
-                      connectNulls
-                    />
-                  );
-                })}
+                {/* Revenue Lines */}
+                <Line
+                  type="monotone"
+                  dataKey="revenue_actual"
+                  name="Revenue (Actual)"
+                  hide={!selectedYAxes.includes('revenue')}
+                  stroke="#2563eb"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+                <Line
+                  type="monotone"
+                  dataKey="revenue_projected"
+                  name="Revenue (Forecast)"
+                  hide={!selectedYAxes.includes('revenue')}
+                  stroke="#fbbf24"
+                  strokeWidth={3}
+                  strokeDasharray="6 4"
+                  dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill="#fbbf24" />)}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+                {/* Cost Lines */}
+                <Line
+                  type="monotone"
+                  dataKey="cost_actual"
+                  name="Cost (Actual)"
+                  hide={!selectedYAxes.includes('cost')}
+                  stroke="#ef4444"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+                <Line
+                  type="monotone"
+                  dataKey="cost_projected"
+                  name="Cost (Forecast)"
+                  hide={!selectedYAxes.includes('cost')}
+                  stroke="#fb923c"
+                  strokeWidth={3}
+                  strokeDasharray="6 4"
+                  dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill="#fb923c" />)}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+                {/* Profit Lines */}
+                <Line
+                  type="monotone"
+                  dataKey="profit_actual"
+                  name="Profit (Actual)"
+                  hide={!selectedYAxes.includes('profit')}
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+                <Line
+                  type="monotone"
+                  dataKey="profit_projected"
+                  name="Profit (Forecast)"
+                  hide={!selectedYAxes.includes('profit')}
+                  stroke="#a78bfa"
+                  strokeWidth={3}
+                  strokeDasharray="6 4"
+                  dot={(props) => (props?.value == null ? null : <circle cx={props.cx} cy={props.cy} r={4} fill="#a78bfa" />)}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
+        {avgAllLoading && (
+          <div className="mt-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+            Loading Prophet forecasts (revenue, cost, profit)...
+          </div>
+        )}
+        {!avgAllLoading && anyError && (
+          <div className="mt-3 text-xs font-semibold text-rose-500">
+            {anyError}
+          </div>
+        )}
         <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
           {realtimeFeed.map((entry, index) => (
             <div key={entry.id} className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-800/50">
@@ -1118,7 +1220,7 @@ function AnalyticsPanel({ title, subtitle, children, className = '', downloadRef
       {downloadRef && <DownloadButton chartRef={containerRef} filename={downloadFilename || title.toLowerCase().replace(/\s+/g, '-')} />}
       <div className="mb-6 pr-16">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{title}</div>
-        <h3 className="mt-2 text-2xl font-black tracking-tighter text-slate-900 dark:text-white">{subtitle}</h3>
+        <p className="mt-2 max-w-3xl text-sm font-medium leading-6 text-slate-500 dark:text-slate-300">{subtitle}</p>
       </div>
       {children}
     </div>

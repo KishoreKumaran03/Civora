@@ -8,3 +8,11 @@ export function sendAIAssistantMessage(payload, token) {
     data: payload,
   });
 }
+
+export function getAIAssistantHealth(token) {
+  return apiRequest({
+    method: 'get',
+    url: '/api/ai/health',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}

@@ -1,13 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useAIAssistant } from '../../context/AIAssistantContext';
-import { getDashboardSummary } from '../../services/projectService';
+import { getDashboardSummary, getProjects, getRevenueForecast, getCostForecast, getProfitForecast } from '../../services/projectService';
 import { COLORS } from '../../constants/colors';
 import { formatInrCompact } from '../../utils/formatters';
 import { DownloadButton } from '../../components/common/DownloadButton';
 import { RevenueChart } from '../../components/charts/RevenueChart';
 import { PieAnalytics } from '../../components/charts/PieAnalytics';
 import { StateMap } from '../../components/charts/StateMap';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
+} from 'recharts';
 
 export function DashboardSummary() {
   const trendPanelRef = useRef(null);
@@ -17,14 +27,26 @@ export function DashboardSummary() {
   const [availableYears, setAvailableYears] = useState([]);
   const [drillMonth, setDrillMonth] = useState(null);
   const [hasData, setHasData] = useState(true);
+  const [stores, setStores] = useState([]);
+  const [selectedStoreId, setSelectedStoreId] = useState('all');
+  const [forecastData, setForecastData] = useState(null);
+  const [costForecastData, setCostForecastData] = useState(null);
+  const [profitForecastData, setProfitForecastData] = useState(null);
+  const [forecastError, setForecastError] = useState('');
+  const [forecastLoading, setForecastLoading] = useState(false);
+  const [forecastWindow, setForecastWindow] = useState(3);
   const { token } = useAuth();
   const { openAssistant } = useAIAssistant();
 
   useEffect(() => {
+    let isCurrentRequest = true;
+
     const fetchData = async () => {
       try {
         const requestedYear = viewYear || '2024';
         const res = await getDashboardSummary(requestedYear, token);
+        if (!isCurrentRequest) return;
+
         const nextSummary = res.data || {};
         const nextAvailableYears = Array.isArray(nextSummary.available_years) ? nextSummary.available_years : [];
 
@@ -36,12 +58,86 @@ export function DashboardSummary() {
           setViewYear(nextAvailableYears[nextAvailableYears.length - 1]);
         }
       } catch (err) {
+        if (!isCurrentRequest) return;
         console.error('Error fetching dashboard:', err);
         setHasData(false);
       }
     };
     fetchData();
+
+    return () => {
+      isCurrentRequest = false;
+    };
   }, [viewYear, token]);
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const response = await getProjects(token);
+        const nextStores = Array.isArray(response.data) ? response.data : [];
+        setStores(nextStores);
+      } catch (error) {
+        console.error('Error fetching store list:', error);
+        setStores([]);
+      }
+    };
+
+    if (token) {
+      fetchStores();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    const fetchForecast = async () => {
+      const forecastProjectId = selectedStoreId === 'all' ? null : selectedStoreId;
+      try {
+        if (isCurrentRequest) {
+          setForecastLoading(true);
+          setForecastError('');
+        }
+
+        const results = await Promise.allSettled([
+          getRevenueForecast(forecastWindow, token, forecastProjectId),
+          getCostForecast(forecastWindow, token, forecastProjectId),
+          getProfitForecast(forecastWindow, token, forecastProjectId),
+        ]);
+
+        if (!isCurrentRequest) return;
+
+        const [revenueResult, costResult, profitResult] = results;
+        setForecastData(revenueResult.status === 'fulfilled' ? revenueResult.value.data || null : null);
+        setCostForecastData(costResult.status === 'fulfilled' ? costResult.value.data || null : null);
+        setProfitForecastData(profitResult.status === 'fulfilled' ? profitResult.value.data || null : null);
+
+        const failedResult = results.find((result) => result.status === 'rejected');
+        if (failedResult) {
+          setForecastError(failedResult.reason?.response?.data?.error || 'One or more Prophet forecasts could not be loaded.');
+        }
+      } catch (error) {
+        console.error('Error fetching Prophet forecasts:', error);
+        if (isCurrentRequest) {
+          setForecastData(null);
+          setCostForecastData(null);
+          setProfitForecastData(null);
+          setForecastError(error.response?.data?.error || 'Prophet forecast generation failed.');
+        }
+      } finally {
+        if (isCurrentRequest) {
+          setForecastLoading(false);
+        }
+      }
+    };
+
+    if (token) {
+      fetchForecast();
+    }
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [token, forecastWindow, selectedStoreId]);
 
   const stats = summary?.stats || {};
   const rawRegionData = summary?.state_data || summary?.region_data || {};
@@ -57,18 +153,44 @@ export function DashboardSummary() {
   const growthIndex = trendSeries.length > 1 && trendSeries[0] > 0
     ? ((trendSeries[trendSeries.length - 1] - trendSeries[0]) / trendSeries[0]) * 100
     : 0;
-  const categoryArray = Object.entries(categoryData).map(([name, value]) => {
-    const total = Object.values(categoryData).reduce((a, b) => a + b, 0);
-    return {
+  const totalCategoryRevenue = Object.values(categoryData).reduce((a, b) => a + Number(b || 0), 0);
+  const categoryArray = Object.entries(categoryData)
+    .sort(([, leftValue], [, rightValue]) => Number(rightValue || 0) - Number(leftValue || 0))
+    .slice(0, 4)
+    .map(([name, value]) => ({
       name,
-      value: Math.round((value / total) * 100),
+      value: totalCategoryRevenue > 0 ? Math.round((Number(value || 0) / totalCategoryRevenue) * 100) : 0,
       amount: formatInrCompact(value).replace('Rs ', '₹'),
       color: COLORS[Object.keys(rawCategoryData).indexOf(name) % COLORS.length]
-    };
-  });
+    }));
 
   const revenueDisplay = formatInrCompact(stats.total_revenue || 0).replace('Rs ', '₹');
-  const forecastDisplay = formatInrCompact(Math.round(Number(stats.total_revenue || 0) * 1.1)).replace('Rs ', '₹');
+  const selectedForecastLabel = `${forecastWindow} month${forecastWindow > 1 ? 's' : ''}`;
+  const forecastTotalValue = forecastData?.forecast_total ?? forecastData?.next_30_day_total ?? 0;
+  const forecastAverageValue = forecastData?.forecast_average_monthly ?? forecastData?.next_30_day_average ?? 0;
+  const forecastDisplay = formatInrCompact(Number(forecastTotalValue || 0)).replace('Rs ', '₹');
+  const buildForecastSeries = (forecast, prefix) => {
+    const forecastRows = Array.isArray(forecast?.combined_trend) ? forecast.combined_trend : [];
+    return forecastRows.map((row) => ({
+      name: String(row.name || row.month || '').trim(),
+      [`${prefix}Actual`]: row.actual == null ? null : Number(row.actual || 0),
+      [`${prefix}Projected`]: row.projected == null ? null : Number(row.projected || 0),
+    }));
+  };
+  const forecastSeries = (() => {
+    const revenueSeries = buildForecastSeries(forecastData, 'revenue');
+    const costSeries = buildForecastSeries(costForecastData, 'cost');
+    const profitSeries = buildForecastSeries(profitForecastData, 'profit');
+    return revenueSeries.map((row, index) => ({
+      ...row,
+      ...(costSeries[index] || {}),
+      ...(profitSeries[index] || {}),
+    }));
+  })();
+  const forecastStart = forecastData?.forecast_start || '—';
+  const forecastEnd = forecastData?.forecast_end || '—';
+  const historyRange = `${forecastData?.history_start || '2021-01-01'} to ${forecastData?.history_end || '2025-12-31'}`;
+  const forecastSubtitle = forecastData?.dataset_info || `Revenue, cost, and profit actuals with Prophet forecasts across the same months`;
   const yearOptions = availableYears;
   const assistantContext = {
     page: 'dashboard',
@@ -108,6 +230,97 @@ export function DashboardSummary() {
         <StatCard title="Growth Index" value={`${growthIndex >= 0 ? '+' : ''}${growthIndex.toFixed(1)}%`} change={`${trendSeries.length} months`} icon="trending_up" color="amber" forecast="revenue trend movement in selected year" />
       </div>
 
+      <div className="grid grid-cols-1 gap-8">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
+          <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+            <div>
+              <h2 className="text-2xl font-black tracking-tighter">Prophet Forecast</h2>
+              <p className="text-xs text-slate-400 font-bold mt-1 uppercase">
+                {forecastSubtitle}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  History: {historyRange}
+                </span>
+                <label className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  Store:
+                  <select
+                    value={selectedStoreId}
+                    onChange={(event) => setSelectedStoreId(event.target.value)}
+                    className="bg-transparent text-[10px] font-black uppercase tracking-[0.2em] text-slate-700 outline-none dark:text-slate-200"
+                  >
+                    <option value="all">All Stores</option>
+                    {stores.map((store) => (
+                      <option key={store.id} value={store.id}>
+                        {store.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-3">
+              <div className="flex flex-wrap gap-2 rounded-2xl bg-slate-50 p-1 dark:bg-slate-800">
+                {[3, 6, 12].map((months) => (
+                  <button
+                    key={months}
+                    type="button"
+                    onClick={() => setForecastWindow(months)}
+                    className={`rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all ${forecastWindow === months ? 'bg-white text-primary shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}
+                  >
+                    {months} Months
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-right dark:bg-emerald-950/30">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-300">
+                    Forecast Total
+                  </div>
+                  <div className="mt-1 text-xl font-black text-emerald-700 dark:text-emerald-200">
+                    {forecastLoading ? 'Loading...' : formatInrCompact(Number(forecastTotalValue)).replace('Rs ', '₹')}
+                  </div>
+                </div>
+                <div className="rounded-2xl bg-sky-50 px-4 py-3 text-right dark:bg-sky-950/30">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-sky-600 dark:text-sky-300">
+                  Avg Revenue / Month
+                  </div>
+                  <div className="mt-1 text-xl font-black text-sky-700 dark:text-sky-200">
+                    {forecastLoading ? 'Loading...' : formatInrCompact(Number(forecastAverageValue)).replace('Rs ', '₹')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-[70vh] min-h-[560px]">
+            {forecastSeries.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={forecastSeries}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fontWeight: 700 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip
+                    formatter={(value, seriesName) => [value == null ? '-' : formatInrCompact(value), seriesName]}
+                    labelFormatter={(value) => `Month: ${value}`}
+                  />
+                  <Legend />
+                  <Line type="monotone" dataKey="revenueActual" stroke="#2563eb" strokeWidth={4} dot={{ r: 4 }} name="Revenue (Actual)" connectNulls />
+                  <Line type="monotone" dataKey="revenueProjected" stroke="#f59e0b" strokeWidth={4} strokeDasharray="6 4" dot={{ r: 5, strokeWidth: 3, stroke: '#fff', fill: '#f59e0b' }} name="Revenue (Forecast)" connectNulls />
+                  <Line type="monotone" dataKey="costActual" stroke="#ef4444" strokeWidth={4} dot={{ r: 4 }} name="Cost (Actual)" connectNulls />
+                  <Line type="monotone" dataKey="costProjected" stroke="#fb923c" strokeWidth={4} strokeDasharray="6 4" dot={{ r: 5, strokeWidth: 3, stroke: '#fff', fill: '#fb923c' }} name="Cost (Forecast)" connectNulls />
+                  <Line type="monotone" dataKey="profitActual" stroke="#10b981" strokeWidth={4} dot={{ r: 4 }} name="Profit (Actual)" connectNulls />
+                  <Line type="monotone" dataKey="profitProjected" stroke="#a78bfa" strokeWidth={4} strokeDasharray="6 4" dot={{ r: 5, strokeWidth: 3, stroke: '#fff', fill: '#a78bfa' }} name="Profit (Forecast)" connectNulls />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex h-full items-center justify-center rounded-[2rem] border border-dashed border-slate-200 bg-slate-50 text-sm font-semibold text-slate-400 dark:border-slate-800 dark:bg-slate-800/40">
+                {forecastLoading ? 'Loading forecast data...' : forecastError || 'Forecast data is not available yet.'}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       {/* Main Charts Section */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Trend Chart Card */}
@@ -143,7 +356,11 @@ export function DashboardSummary() {
           </div>
 
           <div className="relative flex-1 min-h-0">
-            <RevenueChart data={trendData} onClick={(e) => e && setDrillMonth(e.activeLabel)} height="100%" />
+            <RevenueChart
+              data={trendData}
+              onClick={(e) => e && setDrillMonth(e.activeLabel)}
+              height="100%"
+            />
           </div>
 
           <div className="flex justify-center gap-10 mt-8 pt-6 border-t border-slate-50 dark:border-slate-800">
@@ -205,11 +422,12 @@ export function DashboardSummary() {
                 <h2 className="text-2xl font-black tracking-tighter uppercase">Sales by Category</h2>
                 <p className="text-xs text-slate-400 font-bold mt-1">Imported category totals from your latest data</p>
               </div>
-              <div className="text-primary text-[10px] font-black uppercase tracking-widest px-4 py-2 bg-primary/5 rounded-xl">{Object.keys(categoryData).length} categories</div>
+              <div className="text-primary text-[10px] font-black uppercase tracking-widest px-4 py-2 bg-primary/5 rounded-xl">Top 4 categories</div>
             </div>
             <div className="space-y-4">
               {Object.entries(categoryData)
                 .sort(([, leftValue], [, rightValue]) => rightValue - leftValue)
+                .slice(0, 4)
                 .map(([name, value], index, entries) => {
                   const totalCategoryRevenue = entries.reduce((sum, [, categoryValue]) => sum + Number(categoryValue || 0), 0);
                   const progress = totalCategoryRevenue > 0 ? Math.round((Number(value) / totalCategoryRevenue) * 100) : 0;
@@ -380,6 +598,14 @@ function ExplainModal({ onClose }) {
   );
 }
 
+function ForecastStat({ label, value }) {
+  return (
+    <div className="flex items-center justify-between rounded-[1.5rem] border border-slate-100 bg-slate-50 px-5 py-4 dark:border-slate-800 dark:bg-slate-800/50">
+      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{label}</div>
+      <div className="text-sm font-black text-slate-900 dark:text-white">{value}</div>
+    </div>
+  );
+}
 function DrilldownModal({ month, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
@@ -411,3 +637,4 @@ function DrilldownModal({ month, onClose }) {
     </div>
   );
 }
+

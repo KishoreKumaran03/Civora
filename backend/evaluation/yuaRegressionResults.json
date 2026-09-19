@@ -1,0 +1,6312 @@
+[
+  {
+    "question_id": "Q01",
+    "question": "What is CIVORA and what is its main purpose?",
+    "category": "basic_knowledge",
+    "required_capabilities": [
+      "knowledge"
+    ],
+    "answer_requirements": [
+      "Define CIVORA and state its documented purpose concisely."
+    ],
+    "forbidden_behaviors": [
+      "invented capabilities"
+    ],
+    "initial_response": "CIVORA is an enterprise-grade data analytics and visualization platform designed to help retail managers, executives, and data analysts extract actionable business insights from historical sales data. Its main purpose is to aggregate raw spreadsheet data into centralized dashboards, enabling comparison of metrics across multiple stores, categories, and timeframes to support data-driven decision-making.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "CIVORA is an enterprise-grade data analytics and visualization platform designed to help retail managers, executives, and data analysts extract actionable business insights from historical sales data. Its main purpose is to aggregate raw spreadsheet data into centralized dashboards, enabling comparison of metrics across multiple stores, categories, and timeframes to support data-driven decision-making.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [],
+          "tool_rounds": 0,
+          "intent": "knowledge",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:08.545Z"
+  },
+  {
+    "question_id": "Q02",
+    "question": "What are the main analytics capabilities provided by CIVORA?",
+    "category": "basic_knowledge",
+    "required_capabilities": [
+      "knowledge"
+    ],
+    "answer_requirements": [
+      "Summarize documented capabilities only."
+    ],
+    "forbidden_behaviors": [
+      "invented capabilities"
+    ],
+    "initial_response": "CIVORA provides interactive dashboards for visualizing trends, regional breakdowns, and category distributions. It supports schema-aware data ingestion, handling CSV/Excel files with automatic column mapping and normalization. The platform includes AI-driven analytics for natural language queries and report generation. Trend-based forecasting uses historical sales data to predict future revenue. Preprocessing tools clean and format datasets, while metrics like margin and aggregation help analyze operational efficiency.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "CIVORA provides interactive dashboards for visualizing trends, regional breakdowns, and category distributions. It supports schema-aware data ingestion, handling CSV/Excel files with automatic column mapping and normalization. The platform includes AI-driven analytics for natural language queries and report generation. Trend-based forecasting uses historical sales data to predict future revenue. Preprocessing tools clean and format datasets, while metrics like margin and aggregation help analyze operational efficiency.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [],
+          "tool_rounds": 0,
+          "intent": "knowledge",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:14.054Z"
+  },
+  {
+    "question_id": "Q03",
+    "question": "How does CIVORA's forecasting functionality work?",
+    "category": "basic_knowledge",
+    "required_capabilities": [
+      "knowledge"
+    ],
+    "answer_requirements": [
+      "Explain the documented forecasting workflow."
+    ],
+    "forbidden_behaviors": [
+      "invented implementation details"
+    ],
+    "initial_response": "- CIVORA's forecasting uses historical sales velocity to predict next-period revenue.\n- The formula is: Next Revenue = Current Revenue × (1 + Growth Rate / 100).\n- If growth rate can't be calculated (e.g., first month), a default 8.0% baseline is applied.\n- For accurate trends, at least three consecutive months of data are recommended.\n- The AI chatbot enhances forecasts by analyzing dashboard context (e.g., regional trends, category mix) and provides conversational summaries.\n- If the AI server is offline, a local fallback system uses keyword matching to generate basic reports or comparisons.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- CIVORA's forecasting uses historical sales velocity to predict next-period revenue.\n- The formula is: Next Revenue = Current Revenue × (1 + Growth Rate / 100).\n- If growth rate can't be calculated (e.g., first month), a default 8.0% baseline is applied.\n- For accurate trends, at least three consecutive months of data are recommended.\n- The AI chatbot enhances forecasts by analyzing dashboard context (e.g., regional trends, category mix) and provides conversational summaries.\n- If the AI server is offline, a local fallback system uses keyword matching to generate basic reports or comparisons.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:20.675Z"
+  },
+  {
+    "question_id": "Q04",
+    "question": "What kind of business decisions can CIVORA help a store manager make?",
+    "category": "basic_knowledge",
+    "required_capabilities": [
+      "knowledge"
+    ],
+    "answer_requirements": [
+      "Connect documented capabilities to practical decisions without claiming unsupported features."
+    ],
+    "forbidden_behaviors": [
+      "unsupported business claims"
+    ],
+    "initial_response": "- CIVORA helps store managers make data-driven decisions by analyzing key metrics like gross revenue, net profit margins, and cost of goods sold.\n- It enables comparisons across stores, categories, and timeframes to identify trends, optimize pricing, manage inventory, and allocate resources.\n- The platform's forecasts and KPI dashboards support decisions on staffing, promotions, and operational efficiency.\n- Managers can also use SWOT analysis and trend lines to assess strengths, weaknesses, and market opportunities.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- CIVORA helps store managers make data-driven decisions by analyzing key metrics like gross revenue, net profit margins, and cost of goods sold.\n- It enables comparisons across stores, categories, and timeframes to identify trends, optimize pricing, manage inventory, and allocate resources.\n- The platform's forecasts and KPI dashboards support decisions on staffing, promotions, and operational efficiency.\n- Managers can also use SWOT analysis and trend lines to assess strengths, weaknesses, and market opportunities.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.195Z"
+  },
+  {
+    "question_id": "Q05",
+    "question": "What was the total revenue for my selected store?",
+    "category": "live_data",
+    "required_capabilities": [
+      "live_data",
+      "tool_selection",
+      "numerical_accuracy"
+    ],
+    "answer_requirements": [
+      "Use authorized live sales data and report total revenue for the selected store."
+    ],
+    "forbidden_behaviors": [
+      "documentation-only answer",
+      "unauthorized store data"
+    ],
+    "initial_response": "The total revenue for Authorized Store is ₹0 (0 units sold).",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "The total revenue for Authorized Store is ₹0 (0 units sold).",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.248Z"
+  },
+  {
+    "question_id": "Q06",
+    "question": "What are my top-selling products?",
+    "category": "live_data",
+    "required_capabilities": [
+      "live_data",
+      "ranking"
+    ],
+    "answer_requirements": [
+      "Retrieve current store data and identify the ranking."
+    ],
+    "forbidden_behaviors": [
+      "invented products"
+    ],
+    "initial_response": "- For Authorized Store, the total revenue is ₹0 and the top-selling product is Laptop.\n- Top products by revenue: Laptop (₹3.85 crore), TV (₹3.14 crore), Mobile (₹2.73 crore), Headphones (₹1.74 crore), Tablet (₹1.50 crore).",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- For Authorized Store, the total revenue is ₹0 and the top-selling product is Laptop.\n- Top products by revenue: Laptop (₹3.85 crore), TV (₹3.14 crore), Mobile (₹2.73 crore), Headphones (₹1.74 crore), Tablet (₹1.50 crore).",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.250Z"
+  },
+  {
+    "question_id": "Q07",
+    "question": "How much did I sell in total during the requested period?",
+    "category": "live_data",
+    "required_capabilities": [
+      "live_data",
+      "date_interpretation"
+    ],
+    "answer_requirements": [
+      "Resolve the period safely and report the relevant total."
+    ],
+    "forbidden_behaviors": [
+      "hallucinated date"
+    ],
+    "initial_response": "The total revenue for Authorized Store is ₹0 (0 units sold).",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "The total revenue for Authorized Store is ₹0 (0 units sold).",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.251Z"
+  },
+  {
+    "question_id": "Q08",
+    "question": "What is my total quantity sold and total revenue for this period?",
+    "category": "live_data",
+    "required_capabilities": [
+      "live_data",
+      "numerical_accuracy"
+    ],
+    "answer_requirements": [
+      "Report both quantity and revenue for the same period."
+    ],
+    "forbidden_behaviors": [
+      "mixed periods"
+    ],
+    "initial_response": "For Authorized Store, the total quantity sold is 0 units and the total revenue is ₹0.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "For Authorized Store, the total quantity sold is 0 units and the total revenue is ₹0.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.253Z"
+  },
+  {
+    "question_id": "Q09",
+    "question": "Compare my October revenue with November revenue.",
+    "category": "comparative_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "calculation"
+    ],
+    "answer_requirements": [
+      "Report both values, absolute difference, percentage difference, and direction."
+    ],
+    "forbidden_behaviors": [
+      "wrong direction"
+    ],
+    "initial_response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.256Z"
+  },
+  {
+    "question_id": "Q10",
+    "question": "Which month performed better between October and November?",
+    "category": "comparative_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "comparison"
+    ],
+    "answer_requirements": [
+      "Determine the higher month from actual values and explain briefly."
+    ],
+    "forbidden_behaviors": [
+      "unsupported premise"
+    ],
+    "initial_response": "October 2024 performed better than November 2024, generating ₹1.78 crore compared to ₹1.66 crore (higher by ₹12.0 lakh).",
+    "initial_score": 76,
+    "failure_reason": [
+      "incorrect_direction_claimed",
+      "Incorrectly stated November performed better than October."
+    ],
+    "failure_diagnosis": {
+      "failure_type": "incomplete_reasoning",
+      "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+      "missing_capability": "driver_analysis",
+      "required_actions": [
+        "Perform period-over-period contribution analysis",
+        "Investigate product and category shifts",
+        "Report measurable drivers"
+      ]
+    },
+    "correction_strategy": "Re-answer the original CIVORA question accurately: \"Which month performed better between October and November?\". Correction requirements: reconcile all directional statements with deterministic calculations from the data. Do not mention this correction instruction, hidden reasoning, or evaluation.",
+    "corrected_response": "October 2024 performed better than November 2024, generating ₹1.78 crore compared to ₹1.66 crore (higher by ₹12.0 lakh).",
+    "corrected_score": 76,
+    "iterations": 3,
+    "final_score": 76,
+    "passed": false,
+    "evaluation_result": {
+      "score": 76,
+      "passed": false,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 0,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 40,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [
+        "incorrect_direction_claimed",
+        "Incorrectly stated November performed better than October."
+      ],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": [
+        "Incorrectly stated November performed better than October."
+      ]
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "October 2024 performed better than November 2024, generating ₹1.78 crore compared to ₹1.66 crore (higher by ₹12.0 lakh).",
+        "evaluation": {
+          "score": 76,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 0,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "incorrect_direction_claimed",
+            "Incorrectly stated November performed better than October."
+          ],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": [
+            "Incorrectly stated November performed better than October."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      },
+      {
+        "iteration": 2,
+        "response": "January 2024 had the lowest revenue at ₹0.",
+        "evaluation": {
+          "score": 91,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "Did not correctly identify October as the better performing month."
+          ],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": [
+            "Did not correctly identify October as the better performing month."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      },
+      {
+        "iteration": 3,
+        "response": "October 2024 performed better than November 2024, generating ₹1.78 crore compared to ₹1.66 crore (higher by ₹12.0 lakh).",
+        "evaluation": {
+          "score": 76,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 0,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "incorrect_direction_claimed",
+            "Incorrectly stated November performed better than October."
+          ],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": [
+            "Incorrectly stated November performed better than October."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.263Z"
+  },
+  {
+    "question_id": "Q11",
+    "question": "How much did revenue change between these two months?",
+    "category": "comparative_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "calculation"
+    ],
+    "answer_requirements": [
+      "Calculate the absolute revenue change and direction."
+    ],
+    "forbidden_behaviors": [
+      "wrong arithmetic"
+    ],
+    "initial_response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.264Z"
+  },
+  {
+    "question_id": "Q12",
+    "question": "By what percentage did revenue change between October and November?",
+    "category": "comparative_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "calculation"
+    ],
+    "answer_requirements": [
+      "Calculate percentage change using the earlier month as denominator."
+    ],
+    "forbidden_behaviors": [
+      "wrong arithmetic"
+    ],
+    "initial_response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.265Z"
+  },
+  {
+    "question_id": "Q13",
+    "question": "Why did revenue increase from October to November?",
+    "category": "premise_correction",
+    "required_capabilities": [
+      "live_data",
+      "premise_validation",
+      "driver_analysis"
+    ],
+    "answer_requirements": [
+      "Verify the direction before accepting the premise, then explain evidence or state limits."
+    ],
+    "forbidden_behaviors": [
+      "contradictory direction"
+    ],
+    "initial_response": "- The data actually decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- The data actually decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.268Z"
+  },
+  {
+    "question_id": "Q14",
+    "question": "Why did November perform better than October?",
+    "category": "premise_correction",
+    "required_capabilities": [
+      "live_data",
+      "premise_validation"
+    ],
+    "answer_requirements": [
+      "Verify which month performed better before explaining."
+    ],
+    "forbidden_behaviors": [
+      "contradictory direction"
+    ],
+    "initial_response": "- November 2024 did not perform better than October 2024.\n- The data actually shows that October 2024 performed better with ₹1.78 crore in revenue compared to ₹1.66 crore in November 2024 (12.0 lakh, -6.7%).\n- Main observed contributors to the decrease: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- November 2024 did not perform better than October 2024.\n- The data actually shows that October 2024 performed better with ₹1.78 crore in revenue compared to ₹1.66 crore in November 2024 (12.0 lakh, -6.7%).\n- Main observed contributors to the decrease: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.269Z"
+  },
+  {
+    "question_id": "Q15",
+    "question": "Why did sales fall in November when November had higher revenue?",
+    "category": "premise_correction",
+    "required_capabilities": [
+      "live_data",
+      "premise_validation",
+      "contradiction_detection"
+    ],
+    "answer_requirements": [
+      "Identify and resolve the contradiction using actual metrics."
+    ],
+    "forbidden_behaviors": [
+      "accepting contradictory premise"
+    ],
+    "initial_response": "- The premise contains a contradiction: November 2024 did not have higher revenue than October 2024.\n- In fact, both total revenue (₹1.78 crore down to ₹1.66 crore) and quantity sold (from 1280 to 1220) decreased in November 2024.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- The premise contains a contradiction: November 2024 did not have higher revenue than October 2024.\n- In fact, both total revenue (₹1.78 crore down to ₹1.66 crore) and quantity sold (from 1280 to 1220) decreased in November 2024.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "sales",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.271Z"
+  },
+  {
+    "question_id": "Q16",
+    "question": "Why did revenue change between October and November?",
+    "category": "why_driver_analysis",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "calculation",
+      "driver_analysis"
+    ],
+    "answer_requirements": [
+      "Compare periods, calculate direction, investigate measurable product/category/quantity/region contributors, and distinguish evidence from causation."
+    ],
+    "forbidden_behaviors": [
+      "unsupported external cause",
+      "numbers-only answer"
+    ],
+    "initial_response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.274Z"
+  },
+  {
+    "question_id": "Q17",
+    "question": "What caused the decrease in revenue?",
+    "category": "why_driver_analysis",
+    "required_capabilities": [
+      "live_data",
+      "driver_analysis",
+      "evidence"
+    ],
+    "answer_requirements": [
+      "Identify measurable drivers or explicitly state that available data cannot establish the exact cause."
+    ],
+    "forbidden_behaviors": [
+      "invented cause"
+    ],
+    "initial_response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Revenue decreased from October 2024 to November 2024, moving from ₹1.78 crore to ₹1.66 crore (12.0 lakh, -6.7%).\n- Main observed contributors: category Electronics -10.0 lakh; region Karnataka -8.00 lakh; product Laptop -6.00 lakh.\n- The available data confirms the observed shift, but it does not prove an underlying customer or market cause unless CIVORA stores that evidence directly.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.276Z"
+  },
+  {
+    "question_id": "Q18",
+    "question": "Which products contributed most to the change in revenue?",
+    "category": "why_driver_analysis",
+    "required_capabilities": [
+      "live_data",
+      "contribution_analysis",
+      "ranking"
+    ],
+    "answer_requirements": [
+      "Perform contribution analysis across periods, not merely repeat a top-products list."
+    ],
+    "forbidden_behaviors": [
+      "top-list substitution"
+    ],
+    "initial_response": "- Product contribution analysis for the revenue change from October 2024 to November 2024:\n- Laptop: decreased by ₹6.00 lakh (from ₹58.0 lakh to ₹52.0 lakh)\n- Mobile: decreased by ₹5.00 lakh (from ₹40.0 lakh to ₹35.0 lakh)\n- TV: decreased by ₹4.00 lakh (from ₹47.0 lakh to ₹43.0 lakh)\n- Partially offsetting this was Tablet (+₹4.00 lakh).\n- These are the direct measurable product contributors from the store records.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Product contribution analysis for the revenue change from October 2024 to November 2024:\n- Laptop: decreased by ₹6.00 lakh (from ₹58.0 lakh to ₹52.0 lakh)\n- Mobile: decreased by ₹5.00 lakh (from ₹40.0 lakh to ₹35.0 lakh)\n- TV: decreased by ₹4.00 lakh (from ₹47.0 lakh to ₹43.0 lakh)\n- Partially offsetting this was Tablet (+₹4.00 lakh).\n- These are the direct measurable product contributors from the store records.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.277Z"
+  },
+  {
+    "question_id": "Q19",
+    "question": "Which category had the biggest impact on the revenue change?",
+    "category": "why_driver_analysis",
+    "required_capabilities": [
+      "live_data",
+      "contribution_analysis",
+      "ranking"
+    ],
+    "answer_requirements": [
+      "Compare category-level changes and identify the strongest contributor when available."
+    ],
+    "forbidden_behaviors": [
+      "unsupported category claim"
+    ],
+    "initial_response": "- Electronics had the biggest impact on the revenue change from December 2024 to January 2025, increasing by ₹48.0 lakh (from ₹1.10 crore to ₹1.58 crore).\n- The second largest category change was Groceries (+₹12.0 lakh).\n- The available data confirms this category breakdown, but cannot establish an unrecorded market cause.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "December 2024",
+          "January 2025"
+        ],
+        "direction": "increase"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Electronics had the biggest impact on the revenue change from December 2024 to January 2025, increasing by ₹48.0 lakh (from ₹1.10 crore to ₹1.58 crore).\n- The second largest category change was Groceries (+₹12.0 lakh).\n- The available data confirms this category breakdown, but cannot establish an unrecorded market cause.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "December 2024",
+              "January 2025"
+            ],
+            "direction": "increase"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "December 2024",
+              "January 2025"
+            ],
+            "direction": "increase"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "December 2024",
+            "period_b": "January 2025",
+            "values": {
+              "December": 16600000,
+              "January": 23200000
+            },
+            "change": 6600000,
+            "percentage_change": 39.8,
+            "direction": "increase",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 11000000,
+                "current_value": 15800000,
+                "delta": 4800000
+              },
+              {
+                "dimension": "product",
+                "name": "Headphones",
+                "previous_value": 1800000,
+                "current_value": 6200000,
+                "delta": 4400000
+              },
+              {
+                "dimension": "region",
+                "name": "Punjab",
+                "previous_value": 5400000,
+                "current_value": 9000000,
+                "delta": 3600000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 5200000,
+                "current_value": 6800000,
+                "delta": 1600000
+              },
+              {
+                "dimension": "product",
+                "name": "Tablet",
+                "previous_value": 1800000,
+                "current_value": 3100000,
+                "delta": 1300000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.278Z"
+  },
+  {
+    "question_id": "Q20",
+    "question": "Revenue changed significantly. Give me the three strongest pieces of evidence explaining why.",
+    "category": "why_driver_analysis",
+    "required_capabilities": [
+      "live_data",
+      "driver_analysis",
+      "evidence"
+    ],
+    "answer_requirements": [
+      "Synthesize three distinct evidence-backed points rather than repeating totals."
+    ],
+    "forbidden_behaviors": [
+      "repetition",
+      "invented cause"
+    ],
+    "initial_response": "- Here are the three strongest pieces of evidence explaining the revenue change from October 2024 to November 2024:\n- Category shift: Electronics category revenue fell by ₹10.0 lakh (from ₹1.20 crore to ₹1.10 crore).\n- Product contribution: Laptop revenue decreased by ₹6.00 lakh, followed by Mobile (-₹5.00 lakh).\n- Sales volume: Total quantity sold decreased by 60 units (from 1,280 to 1,220).\n- Note: Available store data provides this measurable breakdown evidence, but cannot establish underlying macroeconomic or market causes without additional external data.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Here are the three strongest pieces of evidence explaining the revenue change from October 2024 to November 2024:\n- Category shift: Electronics category revenue fell by ₹10.0 lakh (from ₹1.20 crore to ₹1.10 crore).\n- Product contribution: Laptop revenue decreased by ₹6.00 lakh, followed by Mobile (-₹5.00 lakh).\n- Sales volume: Total quantity sold decreased by 60 units (from 1,280 to 1,220).\n- Note: Available store data provides this measurable breakdown evidence, but cannot establish underlying macroeconomic or market causes without additional external data.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.279Z"
+  },
+  {
+    "question_id": "Q21",
+    "question": "Revenue increased, but did the quantity sold also increase?",
+    "category": "multi_metric_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "premise_validation"
+    ],
+    "answer_requirements": [
+      "Compare revenue and quantity independently and state both directions."
+    ],
+    "forbidden_behaviors": [
+      "assuming correlation"
+    ],
+    "initial_response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [
+        "Question contained an inaccurate premise, but the response failed to verify or correct it."
+      ],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [
+            "Question contained an inaccurate premise, but the response failed to verify or correct it."
+          ],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "quantity",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 1280,
+              "November": 1220
+            },
+            "change": -60,
+            "percentage_change": -4.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.281Z"
+  },
+  {
+    "question_id": "Q22",
+    "question": "Did higher sales volume actually result in higher revenue?",
+    "category": "multi_metric_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "evidence"
+    ],
+    "answer_requirements": [
+      "Compare quantity and revenue changes and explain the observed relationship."
+    ],
+    "forbidden_behaviors": [
+      "assuming causality"
+    ],
+    "initial_response": "- Evaluating sales volume versus revenue from October 2024 to November 2024:\n- Quantity sold moved from 1280 to 1220 (-60 units).\n- Revenue moved from ₹1.78 crore to ₹1.66 crore (12.0 lakh).\n- Both sales volume and revenue moved in the observed directions without demonstrating that volume alone drove revenue.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Evaluating sales volume versus revenue from October 2024 to November 2024:\n- Quantity sold moved from 1280 to 1220 (-60 units).\n- Revenue moved from ₹1.78 crore to ₹1.66 crore (12.0 lakh).\n- Both sales volume and revenue moved in the observed directions without demonstrating that volume alone drove revenue.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "sales",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 17800000,
+              "November": 16600000
+            },
+            "change": -1200000,
+            "percentage_change": -6.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.281Z"
+  },
+  {
+    "question_id": "Q23",
+    "question": "Revenue increased but profit did not. What could explain this from the available data?",
+    "category": "multi_metric_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "driver_analysis"
+    ],
+    "answer_requirements": [
+      "Check revenue, cost, and profit evidence and avoid explanations unsupported by data."
+    ],
+    "forbidden_behaviors": [
+      "invented explanation"
+    ],
+    "initial_response": "- Examining revenue, cost, and net profit from October 2024 to November 2024:\n- Revenue moved from ₹48.0 lakh to ₹41.0 lakh (7.00 lakh).\n- Total cost moved from ₹1.30 crore to ₹1.25 crore (₹-5.00 lakh).\n- Net revenue (profit) moved from ₹48.0 lakh to ₹41.0 lakh (₹-7.00 lakh).\n- From the available data, total costs grew by more than total revenue, which compresses net profit.\n- No external explanations or unsubstantiated business causes should be assumed beyond these recorded figures.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Examining revenue, cost, and net profit from October 2024 to November 2024:\n- Revenue moved from ₹48.0 lakh to ₹41.0 lakh (7.00 lakh).\n- Total cost moved from ₹1.30 crore to ₹1.25 crore (₹-5.00 lakh).\n- Net revenue (profit) moved from ₹48.0 lakh to ₹41.0 lakh (₹-7.00 lakh).\n- From the available data, total costs grew by more than total revenue, which compresses net profit.\n- No external explanations or unsubstantiated business causes should be assumed beyond these recorded figures.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "profit",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 4800000,
+              "November": 4100000
+            },
+            "change": -700000,
+            "percentage_change": -14.6,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.283Z"
+  },
+  {
+    "question_id": "Q24",
+    "question": "Which product generated the most revenue, and did it also have the highest quantity sold?",
+    "category": "multi_metric_reasoning",
+    "required_capabilities": [
+      "live_data",
+      "ranking",
+      "comparison"
+    ],
+    "answer_requirements": [
+      "Compare revenue and quantity rankings separately."
+    ],
+    "forbidden_behaviors": [
+      "assuming identical rankings"
+    ],
+    "initial_response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+    "initial_score": 91,
+    "failure_reason": [
+      "Did not identify Laptop as the top revenue-generating product."
+    ],
+    "failure_diagnosis": {
+      "failure_type": "incomplete_reasoning",
+      "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+      "missing_capability": "driver_analysis",
+      "required_actions": [
+        "Perform period-over-period contribution analysis",
+        "Investigate product and category shifts",
+        "Report measurable drivers"
+      ]
+    },
+    "correction_strategy": "Re-answer the original CIVORA question accurately: \"Which product generated the most revenue, and did it also have the highest quantity sold?\". Correction requirements: directly answer the question using deterministic calculations and verified evidence. Do not mention this correction instruction, hidden reasoning, or evaluation.",
+    "corrected_response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+    "corrected_score": 91,
+    "iterations": 3,
+    "final_score": 91,
+    "passed": false,
+    "evaluation_result": {
+      "score": 91,
+      "passed": false,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 40,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [
+        "Did not identify Laptop as the top revenue-generating product."
+      ],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "October 2024",
+          "November 2024"
+        ],
+        "direction": "decrease"
+      },
+      "validation_errors": [],
+      "requirement_issues": [
+        "Did not identify Laptop as the top revenue-generating product."
+      ]
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+        "evaluation": {
+          "score": 91,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "quantity",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 1280,
+              "November": 1220
+            },
+            "change": -60,
+            "percentage_change": -4.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      },
+      {
+        "iteration": 2,
+        "response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+        "evaluation": {
+          "score": 91,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "quantity",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 1280,
+              "November": 1220
+            },
+            "change": -60,
+            "percentage_change": -4.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      },
+      {
+        "iteration": 3,
+        "response": "For November 2024, the total quantity sold was 1,220 units and the total revenue was ₹1.66 crore.",
+        "evaluation": {
+          "score": 91,
+          "passed": false,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 40,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "validation_errors": [],
+          "requirement_issues": [
+            "Did not identify Laptop as the top revenue-generating product."
+          ]
+        },
+        "failure_diagnosis": {
+          "failure_type": "incomplete_reasoning",
+          "reason": "Assistant retrieved high-level totals but did not investigate product, category, or volume contributors.",
+          "missing_capability": "driver_analysis",
+          "required_actions": [
+            "Perform period-over-period contribution analysis",
+            "Investigate product and category shifts",
+            "Report measurable drivers"
+          ]
+        },
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "October 2024",
+              "November 2024"
+            ],
+            "direction": "decrease"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "quantity",
+            "period_a": "October 2024",
+            "period_b": "November 2024",
+            "values": {
+              "October": 1280,
+              "November": 1220
+            },
+            "change": -60,
+            "percentage_change": -4.7,
+            "direction": "decrease",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 12000000,
+                "current_value": 11000000,
+                "delta": -1000000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 6000000,
+                "current_value": 5200000,
+                "delta": -800000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 5800000,
+                "current_value": 5200000,
+                "delta": -600000
+              },
+              {
+                "dimension": "product",
+                "name": "Mobile",
+                "previous_value": 4000000,
+                "current_value": 3500000,
+                "delta": -500000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 6500000,
+                "current_value": 6000000,
+                "delta": -500000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.288Z"
+  },
+  {
+    "question_id": "Q25",
+    "question": "What is the revenue forecast for the next three months?",
+    "category": "forecasting",
+    "required_capabilities": [
+      "live_data",
+      "forecast",
+      "tool_selection"
+    ],
+    "answer_requirements": [
+      "Use the Prophet forecast service and report exactly the next three forecast months."
+    ],
+    "forbidden_behaviors": [
+      "LLM-generated prediction"
+    ],
+    "initial_response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Forecast for January 2026 to March 2026:\n- January 2026: ₹2.38 crore (range ₹2.22 crore to ₹2.53 crore)\n- February 2026: ₹2.21 crore (range ₹2.08 crore to ₹2.36 crore)\n- March 2026: ₹2.30 crore (range ₹2.16 crore to ₹2.45 crore)\n- Total projected revenue for the selected horizon: ₹6.88 crore.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "forecast",
+        "rows": 3,
+        "target": "revenue"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Forecast for January 2026 to March 2026:\n- January 2026: ₹2.38 crore (range ₹2.22 crore to ₹2.53 crore)\n- February 2026: ₹2.21 crore (range ₹2.08 crore to ₹2.36 crore)\n- March 2026: ₹2.30 crore (range ₹2.16 crore to ₹2.45 crore)\n- Total projected revenue for the selected horizon: ₹6.88 crore.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_revenue_forecast"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "structured_reasoning": null,
+          "forecast_rows": 3
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.294Z"
+  },
+  {
+    "question_id": "Q26",
+    "question": "How does the forecast compare with recent actual revenue?",
+    "category": "forecasting",
+    "required_capabilities": [
+      "live_data",
+      "forecast",
+      "comparison"
+    ],
+    "answer_requirements": [
+      "Compare forecast values with recent actual values using retrieved evidence."
+    ],
+    "forbidden_behaviors": [
+      "un grounded comparison"
+    ],
+    "initial_response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Comparing the forecast with recent actual revenue:\n- Recent actual monthly revenue averaged ₹2.50 crore.\n- The projected 3-month forecast monthly revenue averages ₹2.29 crore.\n- This represents a projected decrease of ₹21.1 lakh (-8.4%) relative to recent actual revenue averages.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "forecast",
+        "rows": 3,
+        "target": "revenue"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Comparing the forecast with recent actual revenue:\n- Recent actual monthly revenue averaged ₹2.50 crore.\n- The projected 3-month forecast monthly revenue averages ₹2.29 crore.\n- This represents a projected decrease of ₹21.1 lakh (-8.4%) relative to recent actual revenue averages.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_revenue_forecast"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "structured_reasoning": null,
+          "forecast_rows": 3
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.297Z"
+  },
+  {
+    "question_id": "Q27",
+    "question": "Is the forecast showing growth or decline?",
+    "category": "forecasting",
+    "required_capabilities": [
+      "forecast",
+      "calculation"
+    ],
+    "answer_requirements": [
+      "Analyze the forecast trend and state direction from forecast values."
+    ],
+    "forbidden_behaviors": [
+      "single-point conclusion"
+    ],
+    "initial_response": "- The revenue forecast indicates decline across the 3-month horizon:\n- January 2026: ₹2.38 crore\n- February 2026: ₹2.21 crore\n- March 2026: ₹2.30 crore\n- From January 2026 (₹2.38 crore) to March 2026 (₹2.30 crore), projected monthly revenue changes by ₹7.99 lakh (-3.4%).",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "forecast",
+        "rows": 3,
+        "target": "revenue"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- The revenue forecast indicates decline across the 3-month horizon:\n- January 2026: ₹2.38 crore\n- February 2026: ₹2.21 crore\n- March 2026: ₹2.30 crore\n- From January 2026 (₹2.38 crore) to March 2026 (₹2.30 crore), projected monthly revenue changes by ₹7.99 lakh (-3.4%).",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_revenue_forecast"
+          ],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "structured_reasoning": null,
+          "forecast_rows": 3
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:29.299Z"
+  },
+  {
+    "question_id": "Q28",
+    "question": "What was my revenue in November? -> How does that compare with October? -> Why was it different? -> Which product contributed most to that difference?",
+    "category": "conversation_context",
+    "required_capabilities": [
+      "live_data",
+      "comparison",
+      "driver_analysis",
+      "context"
+    ],
+    "answer_requirements": [
+      "Preserve revenue, periods, selected store, and analytical context across all turns."
+    ],
+    "forbidden_behaviors": [
+      "context loss"
+    ],
+    "initial_response": "- Product contribution analysis for the revenue change from January 2024 to December 2024:\n- Laptop: increased by ₹52.0 lakh (from ₹0 to ₹52.0 lakh)\n- TV: increased by ₹43.0 lakh (from ₹0 to ₹43.0 lakh)\n- Mobile: increased by ₹35.0 lakh (from ₹0 to ₹35.0 lakh)\n- These are the direct measurable product contributors from the store records.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "analysis",
+        "periods": [
+          "January 2024",
+          "December 2024"
+        ],
+        "direction": "increase"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- Product contribution analysis for the revenue change from January 2024 to December 2024:\n- Laptop: increased by ₹52.0 lakh (from ₹0 to ₹52.0 lakh)\n- TV: increased by ₹43.0 lakh (from ₹0 to ₹43.0 lakh)\n- Mobile: increased by ₹35.0 lakh (from ₹0 to ₹35.0 lakh)\n- These are the direct measurable product contributors from the store records.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "analysis",
+            "periods": [
+              "January 2024",
+              "December 2024"
+            ],
+            "direction": "increase"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_sales_data"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": false,
+          "evidence": {
+            "kind": "analysis",
+            "periods": [
+              "January 2024",
+              "December 2024"
+            ],
+            "direction": "increase"
+          },
+          "structured_reasoning": {
+            "intent": "revenue_change_analysis",
+            "metric": "revenue",
+            "period_a": "January 2024",
+            "period_b": "December 2024",
+            "values": {
+              "January": 0,
+              "December": 16600000
+            },
+            "change": 16600000,
+            "percentage_change": 0,
+            "direction": "increase",
+            "additional_analysis_required": true,
+            "investigated_dimensions": [
+              "product",
+              "category",
+              "quantity",
+              "region"
+            ],
+            "drivers_found": [
+              {
+                "dimension": "category",
+                "name": "Electronics",
+                "previous_value": 0,
+                "current_value": 11000000,
+                "delta": 11000000
+              },
+              {
+                "dimension": "region",
+                "name": "Andhra Pradesh",
+                "previous_value": 0,
+                "current_value": 6000000,
+                "delta": 6000000
+              },
+              {
+                "dimension": "region",
+                "name": "Punjab",
+                "previous_value": 0,
+                "current_value": 5400000,
+                "delta": 5400000
+              },
+              {
+                "dimension": "product",
+                "name": "Laptop",
+                "previous_value": 0,
+                "current_value": 5200000,
+                "delta": 5200000
+              },
+              {
+                "dimension": "region",
+                "name": "Karnataka",
+                "previous_value": 0,
+                "current_value": 5200000,
+                "delta": 5200000
+              }
+            ]
+          },
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:38.746Z"
+  },
+  {
+    "question_id": "Q29",
+    "question": "How did we perform last month?",
+    "category": "ambiguity",
+    "required_capabilities": [
+      "context",
+      "ambiguity"
+    ],
+    "answer_requirements": [
+      "Resolve last month only when context safely establishes date and metric; otherwise ask for clarification."
+    ],
+    "forbidden_behaviors": [
+      "random metric or date"
+    ],
+    "initial_response": "Could you please clarify which performance metric you would like to review (such as revenue, profit, or quantity sold) and which specific month you are referring to?",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": null,
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "Could you please clarify which performance metric you would like to review (such as revenue, profit, or quantity sold) and which specific month you are referring to?",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": null,
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [],
+          "tool_rounds": 0,
+          "intent": "live",
+          "knowledge_used": false,
+          "evidence": null,
+          "structured_reasoning": null,
+          "forecast_rows": null
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:38.747Z"
+  },
+  {
+    "question_id": "Q30",
+    "question": "Why is the forecast useful for CIVORA, and what does my current forecast say?",
+    "category": "knowledge_live_combination",
+    "required_capabilities": [
+      "knowledge",
+      "forecast",
+      "live_data"
+    ],
+    "answer_requirements": [
+      "Clearly separate documented forecasting value from the user-specific current forecast."
+    ],
+    "forbidden_behaviors": [
+      "documentation-only answer",
+      "LLM-generated prediction"
+    ],
+    "initial_response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Forecast for January 2026 to March 2026:\n- January 2026: ₹2.38 crore (range ₹2.22 crore to ₹2.53 crore)\n- February 2026: ₹2.21 crore (range ₹2.08 crore to ₹2.36 crore)\n- March 2026: ₹2.30 crore (range ₹2.16 crore to ₹2.45 crore)\n- Total projected revenue for the selected horizon: ₹6.88 crore.",
+    "initial_score": 100,
+    "failure_reason": [],
+    "failure_diagnosis": null,
+    "correction_strategy": null,
+    "corrected_response": "",
+    "corrected_score": null,
+    "iterations": 1,
+    "final_score": 100,
+    "passed": true,
+    "evaluation_result": {
+      "score": 100,
+      "passed": true,
+      "dimensions": {
+        "intent_understanding": {
+          "score": 100,
+          "weight": 10
+        },
+        "data_relevance": {
+          "score": 100,
+          "weight": 15
+        },
+        "numerical_accuracy": {
+          "score": 100,
+          "weight": 15
+        },
+        "reasoning_completeness": {
+          "score": 100,
+          "weight": 15
+        },
+        "evidence_grounding": {
+          "score": 100,
+          "weight": 10
+        },
+        "premise_validation": {
+          "score": 100,
+          "weight": 10
+        },
+        "hallucination_avoidance": {
+          "score": 100,
+          "weight": 10
+        },
+        "context": {
+          "score": 100,
+          "weight": 5
+        },
+        "response_quality": {
+          "score": 100,
+          "weight": 5
+        },
+        "repetition_contradiction": {
+          "score": 100,
+          "weight": 5
+        }
+      },
+      "critical_failures": [],
+      "evidence_summary": {
+        "kind": "forecast",
+        "rows": 3,
+        "target": "revenue"
+      },
+      "validation_errors": [],
+      "requirement_issues": []
+    },
+    "attempts": [
+      {
+        "iteration": 1,
+        "response": "- According to CIVORA documentation, forecasting uses automated time-series models (Prophet) across 3, 6, and 12-month horizons to help store managers anticipate revenue, plan inventory stock, and evaluate growth or decline trends.\n- Based on your store data, here is your current revenue forecast:\n- Forecast for January 2026 to March 2026:\n- January 2026: ₹2.38 crore (range ₹2.22 crore to ₹2.53 crore)\n- February 2026: ₹2.21 crore (range ₹2.08 crore to ₹2.36 crore)\n- March 2026: ₹2.30 crore (range ₹2.16 crore to ₹2.45 crore)\n- Total projected revenue for the selected horizon: ₹6.88 crore.",
+        "evaluation": {
+          "score": 100,
+          "passed": true,
+          "dimensions": {
+            "intent_understanding": {
+              "score": 100,
+              "weight": 10
+            },
+            "data_relevance": {
+              "score": 100,
+              "weight": 15
+            },
+            "numerical_accuracy": {
+              "score": 100,
+              "weight": 15
+            },
+            "reasoning_completeness": {
+              "score": 100,
+              "weight": 15
+            },
+            "evidence_grounding": {
+              "score": 100,
+              "weight": 10
+            },
+            "premise_validation": {
+              "score": 100,
+              "weight": 10
+            },
+            "hallucination_avoidance": {
+              "score": 100,
+              "weight": 10
+            },
+            "context": {
+              "score": 100,
+              "weight": 5
+            },
+            "response_quality": {
+              "score": 100,
+              "weight": 5
+            },
+            "repetition_contradiction": {
+              "score": 100,
+              "weight": 5
+            }
+          },
+          "critical_failures": [],
+          "evidence_summary": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "validation_errors": [],
+          "requirement_issues": []
+        },
+        "failure_diagnosis": null,
+        "trace": {
+          "tools_used": [
+            "get_revenue_forecast"
+          ],
+          "tool_rounds": 0,
+          "intent": "both",
+          "knowledge_used": true,
+          "evidence": {
+            "kind": "forecast",
+            "rows": 3,
+            "target": "revenue"
+          },
+          "structured_reasoning": null,
+          "forecast_rows": 3
+        },
+        "error": null
+      }
+    ],
+    "timestamp": "2026-09-19T06:47:38.750Z"
+  }
+]

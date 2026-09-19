@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "train:revenue": "python scripts/train_revenue_prophet.py",
+    "train:revenue:db": "python scripts/train_revenue_prophet.py --source database",
+    "test:ai": "node scripts/test_civora_agent.js",
+    "test:yua-reasoning": "node evaluation/yuaEvaluationRunner.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,0 +1,137 @@
+{
+  "target": "cost",
+  "granularity": "monthly",
+  "target_transform": "log1p",
+  "data_points": 60,
+  "train_points": 54,
+  "test_points": 6,
+  "history_start": "2021-01-01",
+  "history_end": "2025-12-01",
+  "test_start": "2025-07-01",
+  "test_end": "2025-12-01",
+  "selected_model_configuration": "Model C (+ Holidays + Promotions)",
+  "regressors_used": [
+    "clearance_promo_days",
+    "festival_holiday_count",
+    "festival_promo_days",
+    "flash_sale_days",
+    "holiday_active",
+    "holiday_count",
+    "promo_active",
+    "promo_count",
+    "promo_days",
+    "promo_discount_max",
+    "seasonal_promo_days"
+  ],
+  "model_comparison": [
+    {
+      "configuration": "Model A (Baseline)",
+      "description": "Revenue + conservative seasonality (no external event regressors)",
+      "regressors": [],
+      "evaluation": {
+        "mae": 2960816.4894,
+        "rmse": 4188342.3977,
+        "mape": 11.9348
+      },
+      "selected": false
+    },
+    {
+      "configuration": "Model B (+ Holidays)",
+      "description": "Revenue + seasonality + holidays (holiday_active, holiday_count, festival_holiday_count)",
+      "regressors": [
+        "holiday_active",
+        "holiday_count",
+        "festival_holiday_count"
+      ],
+      "evaluation": {
+        "mae": 2061497.7229,
+        "rmse": 2702876.9274,
+        "mape": 8.4961
+      },
+      "selected": false
+    },
+    {
+      "configuration": "Model C (+ Holidays + Promotions)",
+      "description": "Revenue + seasonality + holidays + promotions",
+      "regressors": [
+        "clearance_promo_days",
+        "festival_holiday_count",
+        "festival_promo_days",
+        "flash_sale_days",
+        "holiday_active",
+        "holiday_count",
+        "promo_active",
+        "promo_count",
+        "promo_days",
+        "promo_discount_max",
+        "seasonal_promo_days"
+      ],
+      "evaluation": {
+        "mae": 1297649.5472,
+        "rmse": 1789194.3988,
+        "mape": 5.256
+      },
+      "selected": true
+    }
+  ],
+  "evaluation": {
+    "mae": 1297649.5472,
+    "rmse": 1789194.3988,
+    "mape": 5.256
+  },
+  "forecast_days": 24,
+  "trained_at": "2026-09-19T10:01:42.878607+00:00",
+  "sanity_diagnostics": {
+    "hist_min": 14512570.0,
+    "hist_max": 33192476.0,
+    "hist_mean": 18731829.633333333,
+    "hist_median": 17112452.5,
+    "fcst_min": 17533228.9358977,
+    "fcst_max": 32427148.112058364,
+    "fcst_mean": 20111773.839720663,
+    "fcst_median": 18728529.91557167,
+    "forecast_to_hist_ratio": 1.07
+  },
+  "artifacts": {
+    "model": "/app/backend/models/prophet/cost_model.json",
+    "metrics": "/app/backend/models/prophet/cost_metrics.json",
+    "forecast": "/app/backend/models/prophet/cost_forecast.csv",
+    "summary": "/app/backend/models/prophet/cost_training_summary.json"
+  },
+  "future_rows": 24,
+  "future_preview": [
+    {
+      "ds": "2026-01-01",
+      "yhat": 19232316.60018131,
+      "yhat_lower": 17997726.55606514,
+      "yhat_upper": 20439983.872844905
+    },
+    {
+      "ds": "2026-02-01",
+      "yhat": 17879685.78283165,
+      "yhat_lower": 16732170.81221249,
+      "yhat_upper": 19089491.26611258
+    },
+    {
+      "ds": "2026-03-01",
+      "yhat": 18612750.180630703,
+      "yhat_lower": 17486381.16784125,
+      "yhat_upper": 19854125.990119793
+    },
+    {
+      "ds": "2026-04-01",
+      "yhat": 18860306.314620234,
+      "yhat_lower": 17679562.039110105,
+      "yhat_upper": 20071478.891041964
+    },
+    {
+      "ds": "2026-05-01",
+      "yhat": 18807905.860956233,
+      "yhat_lower": 17558731.721490603,
+      "yhat_upper": 20075153.19235642
+    }
+  ],
+  "scope": "global",
+  "project_id": null,
+  "training_mode": "global_only"
+}
